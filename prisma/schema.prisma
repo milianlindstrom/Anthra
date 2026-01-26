@@ -1,0 +1,23 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  status          String   @default("todo") // todo, in-progress, done
+  priority        String   @default("medium") // low, medium, high
+  project         String?
+  estimated_hours Float?
+  due_date        DateTime?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
