@@ -1,9 +1,9 @@
 # Multi-stage build for Next.js application
-FROM node:20-slim
+FROM node:20-slim AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat python3 make g++
+RUN apt-get update && apt-get install -y python3 make g++  # Note: apt-get, not apk for slim
 WORKDIR /app
 
 # Copy package files
