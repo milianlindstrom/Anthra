@@ -47,9 +47,6 @@ docker-compose.yml
 CHANGELOG.md
 README.md
 
-# MCP Server (built separately)
-mcp-server
-
 # Prisma (except schema)
 prisma/dev.db-journal
 prisma/migrations
