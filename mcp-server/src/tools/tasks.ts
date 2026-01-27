@@ -5,7 +5,7 @@ import type {
   RecurringTaskTemplate,
   CreateTaskInput,
   UpdateTaskInput
-} from '../../../shared/types.js';
+} from '../../shared/types.js';
 
 export const taskTools = [
   {
@@ -485,7 +485,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to create task: ${response.statusText}`);
         }
 
@@ -562,7 +562,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to update task: ${response.statusText}`);
         }
 
@@ -607,7 +607,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to move task: ${response.statusText}`);
         }
 
@@ -667,7 +667,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to add dependency: ${response.statusText}`);
         }
 
@@ -689,7 +689,7 @@ export async function handleTaskTool(name: string, args: any) {
         );
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to remove dependency: ${response.statusText}`);
         }
 
@@ -710,12 +710,12 @@ export async function handleTaskTool(name: string, args: any) {
           throw new Error(`Failed to get blocked tasks: ${response.statusText}`);
         }
 
-        const tasks = await response.json();
+        const tasks = await response.json() as Task[];
         const taskList = tasks
-          .map((t: any) => {
-            const blockingTasks = t.dependencies
-              .filter((d: any) => d.depends_on_task.status !== 'done')
-              .map((d: any) => d.depends_on_task.title)
+          .map((t: Task) => {
+            const blockingTasks = t.dependencies!
+              .filter((d: TaskDependency) => d.depends_on_task!.status !== 'done')
+              .map((d: TaskDependency) => d.depends_on_task!.title)
               .join(', ');
             return `- ${t.title} (blocked by: ${blockingTasks})`;
           })
@@ -765,7 +765,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to create subtask: ${response.statusText}`);
         }
 
@@ -813,7 +813,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to create template: ${response.statusText}`);
         }
 
@@ -838,9 +838,9 @@ export async function handleTaskTool(name: string, args: any) {
           throw new Error(`Failed to list templates: ${response.statusText}`);
         }
 
-        const templates = await response.json();
+        const templates = await response.json() as RecurringTaskTemplate[];
         const templateList = templates
-          .map((t: any) => `- ${t.title} (${t.recurrence_pattern}, ${t.active ? 'active' : 'paused'})`)
+          .map((t: RecurringTaskTemplate) => `- ${t.title} (${t.recurrence_pattern}, ${t.active ? 'active' : 'paused'})`)
           .join('\n');
 
         return {
@@ -862,7 +862,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to update template: ${response.statusText}`);
         }
 
@@ -926,9 +926,9 @@ export async function handleTaskTool(name: string, args: any) {
           throw new Error(`Failed to get pending briefings: ${response.statusText}`);
         }
 
-        const tasks = await response.json();
+        const tasks = await response.json() as Task[];
         const taskList = tasks
-          .map((t: any) => `- ${t.title} (from template: ${t.recurring_template?.title || 'unknown'})`)
+          .map((t: Task) => `- ${t.title} (from template: ${t.recurring_template?.title || 'unknown'})`)
           .join('\n');
 
         return {
@@ -949,7 +949,7 @@ export async function handleTaskTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to acknowledge briefing: ${response.statusText}`);
         }
 

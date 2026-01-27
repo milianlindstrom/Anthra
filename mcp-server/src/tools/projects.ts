@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.js';
-import type { Project, CreateProjectInput, UpdateProjectInput } from '../../../shared/types.js';
+import type { Project, CreateProjectInput, UpdateProjectInput } from '../../shared/types.js';
 
 export const projectTools = [
   {
@@ -133,7 +133,7 @@ export async function handleProjectTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to create project: ${response.statusText}`);
         }
 
@@ -180,7 +180,7 @@ export async function handleProjectTool(name: string, args: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
+          const error = await response.json() as { error?: string };
           throw new Error(error.error || `Failed to update project: ${response.statusText}`);
         }
 
