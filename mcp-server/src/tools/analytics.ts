@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.js';
-import type { Task, RecurringTaskTemplate } from '../../shared/types.js';
+import type { Task } from '../../shared/types.js';
 
 export const analyticsTools = [
   {

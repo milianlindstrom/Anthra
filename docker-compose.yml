@@ -18,8 +18,8 @@ services:
 
   ulrik-mcp:
     build:
-      context: .
-      dockerfile: ./mcp-server/Dockerfile
+      context: ./mcp-server
+      dockerfile: Dockerfile
     container_name: ulrik-mcp
     ports:
       - "3001:3001"
