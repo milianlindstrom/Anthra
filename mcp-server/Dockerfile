@@ -4,7 +4,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including dev dependencies for building)
+# Install ALL dependencies
 RUN npm ci
 
 # Copy source code
@@ -31,5 +31,5 @@ COPY --from=builder /app/dist ./dist
 # Expose MCP server port
 EXPOSE 3001
 
-# Start the server
+# Default to stdio mode, can override with http-server.js
 CMD ["node", "dist/src/index.js"]

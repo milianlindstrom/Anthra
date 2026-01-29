@@ -30,6 +30,22 @@ services:
     networks:
       - ulrik-network
 
+  ulrik-mcp-http:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    container_name: ulrik-mcp-http
+    command: ["node", "dist/src/http-server.js"]
+    ports:
+      - "3001:3001"
+    environment:
+      - ULRIK_API_URL=http://ulrik-ui:3000
+      - MCP_SERVER_PORT=3001
+    depends_on:
+      - ulrik-ui
+    networks:
+      - ulrik-network
+
 networks:
   ulrik-network:
     driver: bridge
