@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
   const projectBreakdown = tasks.reduce((acc, task) => {
     const projectKey = task.project?.id || 'no-project'
     const projectName = task.project?.name || 'No Project'
-    const projectIcon = task.project?.icon || '📋'
+    const projectIcon = task.project?.icon || ''
     const projectColor = task.project?.color || '#6b7280'
     
     if (!acc[projectKey]) {

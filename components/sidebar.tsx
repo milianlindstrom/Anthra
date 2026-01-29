@@ -78,19 +78,19 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
         className
       )}>
       {/* Logo/Header */}
-      <div className="p-4 border-b">
+      <div className="p-6 border-b">
         <Link href="/kanban" className="flex items-center gap-2">
-          <div className="text-2xl font-bold">Ulrik</div>
+          <div className="text-xl font-medium tracking-tight">ULRIK</div>
         </Link>
       </div>
 
       {/* Projects Section */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-4">
+        <div className="p-6 space-y-6">
           {/* Projects Header */}
           <button
             onClick={() => setIsProjectsOpen(!isProjectsOpen)}
-            className="flex items-center justify-between w-full text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center justify-between w-full text-xs font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
           >
             <span>Projects</span>
             <ChevronRight 
@@ -108,9 +108,9 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
               <button
                 onClick={() => handleProjectSelect('all')}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                   selectedProjectId === 'all'
-                    ? "bg-primary/10 text-primary font-medium"
+                    ? "bg-primary text-primary-foreground font-medium"
                     : "hover:bg-muted text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -127,13 +127,12 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
                   key={project.id}
                   onClick={() => handleProjectSelect(project.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                    "w-full flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                     selectedProjectId === project.id
-                      ? "bg-primary/10 text-primary font-medium"
+                      ? "bg-primary text-primary-foreground font-medium"
                       : "hover:bg-muted text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <span className="text-base shrink-0">{project.icon}</span>
                   <span className="flex-1 text-left truncate">{project.name}</span>
                   {project._count?.tasks !== undefined && (
                     <span className="text-xs text-muted-foreground shrink-0">
@@ -149,7 +148,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
               {/* Manage Projects Link */}
               <Link
                 href="/projects"
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-2"
+                className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-3"
               >
                 <Settings className="h-4 w-4" />
                 <span>Manage Projects</span>
@@ -162,7 +161,6 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
             <div className="pt-4 border-t">
               <div className="mb-2 px-3 py-2">
                 <div className="flex items-center gap-2 text-sm font-semibold">
-                  <span className="text-base">{selectedProject.icon}</span>
                   <span className="truncate">{selectedProject.name}</span>
                 </div>
               </div>
@@ -175,7 +173,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
                       key={item.name}
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                        "flex items-center gap-3 px-3 py-2  text-sm transition-colors",
                         isActive
                           ? "bg-primary/10 text-primary font-medium"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -208,7 +206,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
                       key={item.name}
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                        "flex items-center gap-3 px-3 py-2  text-sm transition-colors",
                         isActive
                           ? "bg-primary/10 text-primary font-medium"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -226,13 +224,13 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Footer/Shortcuts */}
-      <div className="p-4 border-t space-y-2 text-xs text-muted-foreground">
+      <div className="p-6 border-t space-y-2 text-xs text-muted-foreground/60">
         <div className="flex items-center gap-2">
-          <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/⌘ F</kbd>
+          <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/⌘ F</kbd>
           <span>Search</span>
         </div>
         <div className="flex items-center gap-2">
-          <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/⌘ K</kbd>
+          <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/⌘ K</kbd>
           <span>Quick Add</span>
         </div>
       </div>

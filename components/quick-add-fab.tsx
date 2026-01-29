@@ -9,12 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from './ui/label'
 import { cn } from '@/lib/utils'
 import { Project } from '@/lib/types'
+import { useProject } from '@/contexts/project-context'
 
 interface QuickAddFabProps {
   onTaskCreated: () => void
 }
 
 export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
+  const { selectedProjectId } = useProject()
   const [open, setOpen] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [formData, setFormData] = useState({
@@ -41,8 +43,12 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
   useEffect(() => {
     if (open) {
       fetchProjects()
+      // Use selected project from context if available
+      if (selectedProjectId !== 'all') {
+        setFormData(prev => ({ ...prev, project_id: selectedProjectId }))
+      }
     }
-  }, [open])
+  }, [open, selectedProjectId])
 
   const fetchProjects = async () => {
     try {
@@ -50,9 +56,10 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
       const data = await res.json()
       setProjects(data)
       
-      // Auto-select first project if none selected
+      // Use selected project from context, or first project if none selected
       if (!formData.project_id && data.length > 0) {
-        setFormData(prev => ({ ...prev, project_id: data[0].id }))
+        const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : data[0].id
+        setFormData(prev => ({ ...prev, project_id: projectToUse }))
       }
     } catch (error) {
       console.error('Error fetching projects:', error)
@@ -76,9 +83,11 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
         }),
       })
 
+      // Reset form but keep the selected project
+      const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : (projects.length > 0 ? projects[0].id : '')
       setFormData({
         title: '',
-        project_id: projects.length > 0 ? projects[0].id : '',
+        project_id: projectToUse,
         priority: 'medium',
       })
       setOpen(false)
@@ -131,25 +140,27 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="quick-project">Project *</Label>
-                <Select 
-                  value={formData.project_id} 
-                  onValueChange={(value) => setFormData({ ...formData, project_id: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects.map(project => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.icon} {project.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className={cn("grid gap-4", selectedProjectId !== 'all' ? "grid-cols-1" : "grid-cols-2")}>
+              {selectedProjectId === 'all' && (
+                <div className="space-y-2">
+                  <Label htmlFor="quick-project">Project *</Label>
+                  <Select 
+                    value={formData.project_id} 
+                    onValueChange={(value) => setFormData({ ...formData, project_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map(project => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="quick-priority">Priority</Label>
@@ -179,7 +190,7 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
 
           <div className="border-t pt-3 mt-2">
             <p className="text-xs text-muted-foreground text-center">
-              💡 Tip: Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/Cmd + K</kbd> anytime to quick add
+              Tip: Press <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/Cmd + K</kbd> anytime to quick add
             </p>
           </div>
         </DialogContent>

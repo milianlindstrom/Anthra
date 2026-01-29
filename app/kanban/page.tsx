@@ -252,9 +252,9 @@ export default function KanbanPage() {
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Kanban Board</h1>
+    <div className="w-full max-w-[2400px] mx-auto px-8 py-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <h1 className="text-xl font-medium tracking-tight">KANBAN</h1>
         <div className="flex items-center gap-2 md:gap-4 flex-wrap">
           <Button onClick={() => setIsNewTaskOpen(true)} className="hidden md:flex">
             <Plus className="h-4 w-4 mr-2" />
@@ -265,7 +265,7 @@ export default function KanbanPage() {
 
       {/* Bulk Action Toolbar */}
       {selectedTaskIds.size > 0 && (
-        <div className="mb-4 p-4 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-between flex-wrap gap-4">
+        <div className="mb-6 p-4 bg-primary border border-border flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">
               {selectedTaskIds.size} task{selectedTaskIds.size !== 1 ? 's' : ''} selected
@@ -313,7 +313,7 @@ export default function KanbanPage() {
               variant="outline"
               size="sm"
               onClick={() => handleBulkStatusUpdate('done')}
-              className="bg-green-500/10 hover:bg-green-500/20 border-green-500/30"
+              className=""
             >
               Done
             </Button>
@@ -322,7 +322,7 @@ export default function KanbanPage() {
       )}
 
       {/* Quick Filters */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 pb-4 border-b">
+      <div className="flex flex-wrap items-center gap-3 mb-8 pb-6 border-b">
         {quickFilters.map(filter => (
           <Badge
             key={filter.id}
@@ -375,7 +375,7 @@ export default function KanbanPage() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-6 max-w-[2400px] mx-auto">
           <KanbanColumn
             id="backlog"
             title="Backlog"

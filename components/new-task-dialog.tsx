@@ -8,6 +8,7 @@ import { Textarea } from './ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Label } from './ui/label'
 import { Project } from '@/lib/types'
+import { useProject } from '@/contexts/project-context'
 
 interface NewTaskDialogProps {
   open: boolean
@@ -17,13 +18,14 @@ interface NewTaskDialogProps {
 }
 
 export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjectId }: NewTaskDialogProps) {
+  const { selectedProjectId } = useProject()
   const [projects, setProjects] = useState<Project[]>([])
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     status: 'backlog',
     priority: 'medium',
-    project_id: defaultProjectId || '',
+    project_id: '',
     start_date: '',
     estimated_hours: '',
     due_date: '',
@@ -32,11 +34,13 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
   useEffect(() => {
     if (open) {
       fetchProjects()
-      if (defaultProjectId) {
-        setFormData(prev => ({ ...prev, project_id: defaultProjectId }))
+      // Use selected project from context, or defaultProjectId, or first project
+      const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : (defaultProjectId || '')
+      if (projectToUse) {
+        setFormData(prev => ({ ...prev, project_id: projectToUse }))
       }
     }
-  }, [open, defaultProjectId])
+  }, [open, defaultProjectId, selectedProjectId])
 
   const fetchProjects = async () => {
     try {
@@ -44,9 +48,10 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
       const data = await res.json()
       setProjects(data)
       
-      // If no project selected and there are projects, select the first one
+      // If no project selected and there are projects, use context or select the first one
       if (!formData.project_id && data.length > 0) {
-        setFormData(prev => ({ ...prev, project_id: data[0].id }))
+        const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : data[0].id
+        setFormData(prev => ({ ...prev, project_id: projectToUse }))
       }
     } catch (error) {
       console.error('Error fetching projects:', error)
@@ -73,12 +78,14 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
         }),
       })
 
+      // Reset form but keep the selected project
+      const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : (defaultProjectId || '')
       setFormData({
         title: '',
         description: '',
         status: 'backlog',
         priority: 'medium',
-        project_id: defaultProjectId || '',
+        project_id: projectToUse,
         start_date: '',
         estimated_hours: '',
         due_date: '',
@@ -148,27 +155,28 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="project_id">Project *</Label>
-            <Select 
-              value={formData.project_id} 
-              onValueChange={(value) => setFormData({ ...formData, project_id: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a project" />
-              </SelectTrigger>
-              <SelectContent>
-                {projects.map(project => (
-                  <SelectItem key={project.id} value={project.id}>
-                    <div className="flex items-center gap-2">
-                      <span>{project.icon}</span>
-                      <span>{project.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {selectedProjectId === 'all' && (
+            <div className="space-y-2">
+              <Label htmlFor="project_id">Project *</Label>
+              <Select 
+                value={formData.project_id} 
+                onValueChange={(value) => setFormData({ ...formData, project_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a project" />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.map(project => (
+                    <SelectItem key={project.id} value={project.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{project.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

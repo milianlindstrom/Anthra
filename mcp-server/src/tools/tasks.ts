@@ -80,6 +80,52 @@ export const taskTools = [
     },
   },
   {
+    name: 'search_tasks',
+    description: 'Search tasks by title or description. Returns tasks matching the search query.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query to match against task title or description (required)',
+        },
+        project_id: {
+          type: 'string',
+          description: 'Filter by project ID (optional)',
+        },
+        status: {
+          type: 'string',
+          enum: ['backlog', 'todo', 'in-progress', 'review', 'done'],
+          description: 'Filter by status (optional)',
+        },
+        priority: {
+          type: 'string',
+          enum: ['low', 'medium', 'high'],
+          description: 'Filter by priority (optional)',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'find_task_by_title',
+    description: 'Find a task by its exact or partial title. Returns the first matching task with full details.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+          description: 'Task title to search for (required)',
+        },
+        project_id: {
+          type: 'string',
+          description: 'Filter by project ID (optional)',
+        },
+      },
+      required: ['title'],
+    },
+  },
+  {
     name: 'get_task',
     description: 'Get detailed information about a specific task.',
     inputSchema: {
@@ -486,7 +532,10 @@ export async function handleTaskTool(name: string, args: any) {
 
         if (!response.ok) {
           const error = await response.json() as { error?: string };
-          throw new Error(error.error || `Failed to create task: ${response.statusText}`);
+          if (response.status === 400) {
+            throw new Error(`Invalid request: ${error.error || 'Missing required fields (title, project_id)'}`);
+          }
+          throw new Error(error.error || `Failed to create task (${response.status}): ${response.statusText}`);
         }
 
         const task = await response.json() as Task;
@@ -510,7 +559,7 @@ export async function handleTaskTool(name: string, args: any) {
         const response = await fetch(`${apiUrl}/api/tasks?${params}`);
         
         if (!response.ok) {
-          throw new Error(`Failed to list tasks: ${response.statusText}`);
+          throw new Error(`Failed to list tasks (${response.status}): ${response.statusText}. Check that the API server is running and accessible.`);
         }
 
         const tasks = await response.json() as Task[];
@@ -530,14 +579,94 @@ export async function handleTaskTool(name: string, args: any) {
         };
       }
 
+      case 'search_tasks': {
+        const params = new URLSearchParams();
+        params.append('search', args.query);
+        if (args.project_id) params.append('project_id', args.project_id);
+        if (args.status) params.append('status', args.status);
+        if (args.priority) params.append('priority', args.priority);
+
+        const response = await fetch(`${apiUrl}/api/tasks?${params}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to search tasks: ${response.statusText}`);
+        }
+
+        const tasks = await response.json() as Task[];
+        
+        const summary = `Found ${tasks.length} task(s) matching "${args.query}"`;
+        const taskList = tasks
+          .map((t: any) => `- [${t.status}] ${t.title} (${t.priority} priority) - ID: ${t.id} - Project: ${t.project?.name || t.project_id}`)
+          .join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `${summary}\n\n${taskList || 'No tasks found.'}`,
+            },
+          ],
+        };
+      }
+
+      case 'find_task_by_title': {
+        const params = new URLSearchParams();
+        params.append('search', args.title);
+        if (args.project_id) params.append('project_id', args.project_id);
+
+        const response = await fetch(`${apiUrl}/api/tasks?${params}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to find task: ${response.statusText}`);
+        }
+
+        const tasks = await response.json() as Task[];
+        const matchingTask = tasks.find((t: Task) => 
+          t.title.toLowerCase().includes(args.title.toLowerCase())
+        );
+
+        if (!matchingTask) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `❌ No task found with title containing "${args.title}"`,
+              },
+            ],
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(matchingTask, null, 2),
+            },
+          ],
+        };
+      }
+
       case 'get_task': {
         const response = await fetch(`${apiUrl}/api/tasks/${args.task_id}`);
         
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error('Task not found');
+            throw new Error(`Task not found: No task exists with ID "${args.task_id}"`);
           }
-          throw new Error(`Failed to get task: ${response.statusText}`);
+          if (response.status === 405) {
+            throw new Error(`Method not allowed: The API endpoint for getting tasks may not be configured correctly. Please check the server configuration.`);
+          }
+          const errorText = await response.text();
+          let errorMessage = `Failed to get task: ${response.statusText}`;
+          try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.error) {
+              errorMessage = `Failed to get task: ${errorJson.error}`;
+            }
+          } catch {
+            // If error response is not JSON, use the status text
+          }
+          throw new Error(errorMessage);
         }
 
         const task = await response.json() as Task;
@@ -563,7 +692,13 @@ export async function handleTaskTool(name: string, args: any) {
 
         if (!response.ok) {
           const error = await response.json() as { error?: string };
-          throw new Error(error.error || `Failed to update task: ${response.statusText}`);
+          if (response.status === 404) {
+            throw new Error(`Task not found: No task exists with ID "${task_id}"`);
+          }
+          if (response.status === 400 && error.error) {
+            throw new Error(`Invalid update: ${error.error}`);
+          }
+          throw new Error(error.error || `Failed to update task (${response.status}): ${response.statusText}`);
         }
 
         const task = await response.json() as Task;

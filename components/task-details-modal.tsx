@@ -300,7 +300,7 @@ export function TaskDetailsModal({ task, open, onOpenChange, onTaskUpdated, onTa
               </>
             ) : (
               <>
-                <Badge variant="outline" className={cn('text-sm', statusColors[task.status])}>
+                <Badge variant="outline" className={cn('status-badge text-sm font-mono', statusColors[task.status])}>
                   {task.status}
                 </Badge>
                 <Badge variant="outline" className={cn('text-sm', priorityColors[task.priority])}>

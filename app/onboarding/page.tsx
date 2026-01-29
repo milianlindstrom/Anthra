@@ -151,7 +151,7 @@ export default function OnboardingPage() {
               {slide.tips && (
                 <div className="bg-muted/30 rounded-lg p-6 space-y-3">
                   <h3 className="font-semibold flex items-center gap-2">
-                    💡 Quick Tips
+                    Quick Tips
                   </h3>
                   <ul className="space-y-2">
                     {slide.tips.map((tip, index) => (

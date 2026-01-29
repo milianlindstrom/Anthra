@@ -27,17 +27,18 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
   } : undefined
 
-  // Plane-inspired priority colors
+  // Minimalist charcoal priority colors
   const priorityColors = {
-    low: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
-    medium: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-    high: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
+    low: 'bg-muted text-muted-foreground border-border',
+    medium: 'bg-muted text-foreground border-border',
+    high: 'bg-primary/10 text-foreground border-primary/30',
   }
 
-  const priorityBorderColors = {
-    low: 'border-l-sky-500',
-    medium: 'border-l-amber-500',
-    high: 'border-l-rose-500',
+  // Subtle faded priority background tints
+  const priorityBackgroundColors = {
+    low: 'bg-blue-500/5 border-blue-500/10',
+    medium: 'bg-yellow-500/5 border-yellow-500/10',
+    high: 'bg-red-500/5 border-red-500/10',
   }
 
   // Calculate due date status
@@ -108,14 +109,14 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
       {...attributes}
       onClick={() => onClick?.(task)}
       className={cn(
-        "group cursor-grab active:cursor-grabbing transition-all duration-150 border-l-[3px]",
-        "hover:border-border hover:shadow-md",
-        "bg-card/80 backdrop-blur-sm",
-        isDragging && "opacity-50 shadow-xl scale-[1.02] rotate-2",
-        priorityBorderColors[task.priority]
+        "group cursor-grab active:cursor-grabbing transition-all duration-150",
+        "hover:border-foreground/20",
+        "bg-card border",
+        isDragging && "opacity-50",
+        priorityBackgroundColors[task.priority]
       )}
     >
-      <CardHeader className="pb-3 relative">
+      <CardHeader className="pb-2 relative">
         <div className="flex items-start justify-between gap-2">
           {onSelect && (
             <input
@@ -126,15 +127,15 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
                 onSelect(task.id, e.target.checked)
               }}
               onClick={(e) => e.stopPropagation()}
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+              className="mt-1 h-4 w-4 border-border text-primary focus:ring-primary cursor-pointer"
             />
           )}
-          <CardTitle className="text-sm font-semibold line-clamp-2 flex-1 leading-snug">
+          <CardTitle className="task-title text-sm font-medium line-clamp-2 flex-1 leading-tight">
             {task.title}
           </CardTitle>
           <div className="flex items-center gap-1 shrink-0">
             {task.estimated_hours && (
-              <Badge variant="outline" className="text-xs font-mono px-1.5 py-0.5 font-medium">
+              <Badge variant="outline" className="time-estimate text-xs font-mono px-1.5 py-0.5 font-medium">
                 {task.estimated_hours}h
               </Badge>
             )}
@@ -154,9 +155,9 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2 pt-0">
         {task.description && (
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+          <p className="task-description text-xs text-muted-foreground line-clamp-2 leading-normal">
             {task.description}
           </p>
         )}
@@ -171,16 +172,15 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
                 color: task.project.color,
               }}
             >
-              <span className="mr-1">{task.project.icon}</span>
               {task.project.name}
             </Badge>
           )}
-          <Badge variant="outline" className={cn('text-xs font-medium', priorityColors[task.priority])}>
+          <Badge variant="outline" className={cn('priority-badge text-xs font-mono px-1.5 py-0.5', priorityColors[task.priority])}>
             {task.priority.toUpperCase()}
           </Badge>
           {dueDateInfo && (
             <div className={cn(
-              "flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded",
+              "flex items-center gap-1 text-xs font-medium px-2 py-0.5",
               dueDateInfo.className
             )}>
               {dueDateInfo.showIcon && <dueDateInfo.icon className="h-3 w-3" />}
@@ -208,7 +208,8 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
           )}
           {task.needs_ai_briefing && (
             <Badge variant="outline" className="text-xs font-medium bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
-              ⚠️ Needs AI review
+              <AlertCircle className="h-3 w-3 mr-1" />
+              Needs AI review
             </Badge>
           )}
         </div>

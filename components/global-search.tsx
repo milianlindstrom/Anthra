@@ -118,7 +118,7 @@ export function GlobalSearch() {
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h4 className="font-medium line-clamp-1">{task.title}</h4>
                         <div className="flex items-center gap-1 shrink-0">
-                          <Badge variant="outline" className={cn('text-xs', statusColors[task.status])}>
+                          <Badge variant="outline" className={cn('status-badge text-xs font-mono', statusColors[task.status])}>
                             {task.status}
                           </Badge>
                         </div>

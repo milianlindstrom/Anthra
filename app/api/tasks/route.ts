@@ -14,11 +14,18 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const projectId = searchParams.get('project_id')
     const includeArchived = searchParams.get('archived') === 'true'
+    const searchQuery = searchParams.get('search')
 
     const tasks = await prisma.task.findMany({
       where: {
         ...(projectId && { project_id: projectId }),
         ...(includeArchived ? {} : { archived: false }),
+        ...(searchQuery && {
+          OR: [
+            { title: { contains: searchQuery } },
+            { description: { contains: searchQuery } },
+          ],
+        }),
       },
       include: {
         project: true,

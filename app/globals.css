@@ -23,30 +23,31 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --radius: 0px;
   }
 
   .dark {
-    /* Plane-inspired dark slate colors */
-    --background: 222 47% 4%;        /* slate-950 base */
-    --foreground: 210 40% 98%;       /* slate-50 text */
-    --card: 217 33% 7%;              /* slate-900 cards */
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 7%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;          /* blue-500 primary */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 215 25% 12%;        /* slate-850 */
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 25% 12%;
-    --muted-foreground: 215 20% 65%; /* slate-400 */
-    --accent: 215 25% 15%;           /* slate-800 hover */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84% 60%;        /* rose-500 */
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 12%;           /* slate-800 borders */
-    --input: 217 33% 12%;
-    --ring: 217 91% 60%;
+    /* Minimalist charcoal design */
+    --background: 0 0% 3%;           /* near-black background */
+    --foreground: 0 0% 98%;          /* near-white text */
+    --card: 0 0% 5%;                 /* charcoal cards */
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 20%;             /* charcoal primary */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 8%;           /* dark gray secondary */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 60%;   /* medium gray muted text */
+    --accent: 0 0% 12%;             /* slightly lighter for hover */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 65% 50%;        /* muted red */
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;             /* subtle borders */
+    --input: 0 0% 8%;
+    --ring: 0 0% 30%;               /* subtle focus ring */
+    --radius: 0px;                  /* Sharp angles - no rounding */
   }
 }
 
@@ -79,12 +80,29 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-weight: 500;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
   
-  /* Better typography */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+  /* Typography - IBM Plex Sans */
+  h1, h2, h3, h4, h5, h6, .column-header {
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-weight: 600;
+    @apply tracking-tight;
+  }
+  
+  /* Body and UI elements - IBM Plex Sans Medium */
+  .task-title, .task-description, button, p, span, div, input, textarea, select {
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-weight: 500;
+  }
+  
+  /* Technical elements - JetBrains Mono */
+  .task-id, .time-estimate, .priority-badge, .status-badge {
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
   
   h1 {
