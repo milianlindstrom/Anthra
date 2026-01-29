@@ -14,9 +14,11 @@ interface TaskCardProps {
   isDragging?: boolean
   onDelete?: (taskId: string) => void
   onClick?: (task: Task) => void
+  isSelected?: boolean
+  onSelect?: (taskId: string, selected: boolean) => void
 }
 
-export function TaskCard({ task, isDragging = false, onDelete, onClick }: TaskCardProps) {
+export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelected = false, onSelect }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   })
@@ -115,6 +117,18 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick }: TaskCa
     >
       <CardHeader className="pb-3 relative">
         <div className="flex items-start justify-between gap-2">
+          {onSelect && (
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(e) => {
+                e.stopPropagation()
+                onSelect(task.id, e.target.checked)
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+            />
+          )}
           <CardTitle className="text-sm font-semibold line-clamp-2 flex-1 leading-snug">
             {task.title}
           </CardTitle>

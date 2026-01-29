@@ -13,6 +13,8 @@ interface KanbanColumnProps {
   onDeleteTask: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   accentColor?: 'gray' | 'blue' | 'purple' | 'orange' | 'green'
+  selectedTaskIds?: Set<string>
+  onTaskSelect?: (taskId: string, selected: boolean) => void
 }
 
 // Plane-inspired status colors
@@ -49,7 +51,7 @@ const accentColorClasses = {
   },
 }
 
-export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, accentColor = 'gray' }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, accentColor = 'gray', selectedTaskIds, onTaskSelect }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   })
@@ -84,7 +86,14 @@ export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, acce
           </div>
         ) : (
           tasks.map(task => (
-            <TaskCard key={task.id} task={task} onDelete={onDeleteTask} onClick={onTaskClick} />
+            <TaskCard 
+              key={task.id} 
+              task={task} 
+              onDelete={onDeleteTask} 
+              onClick={onTaskClick}
+              isSelected={selectedTaskIds?.has(task.id) || false}
+              onSelect={onTaskSelect}
+            />
           ))
         )}
       </div>

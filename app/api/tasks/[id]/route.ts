@@ -8,6 +8,71 @@ function calculateStartDate(dueDate: Date, estimatedHours: number): Date {
   return startDate
 }
 
+// GET /api/tasks/[id] - Get a single task
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params
+
+    const task = await prisma.task.findUnique({
+      where: { id },
+      include: {
+        project: true,
+        dependencies: {
+          include: {
+            depends_on_task: {
+              include: {
+                project: true,
+              },
+            },
+          },
+        },
+        blocking_tasks: {
+          include: {
+            task: {
+              include: {
+                project: true,
+              },
+            },
+          },
+        },
+        subtasks: {
+          where: { archived: false },
+          include: {
+            project: true,
+          },
+        },
+        parent_task: {
+          include: {
+            project: true,
+          },
+        },
+        recurring_template: true,
+        _count: {
+          select: { subtasks: true },
+        },
+      },
+    })
+
+    if (!task) {
+      return NextResponse.json(
+        { error: 'Task not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(task)
+  } catch (error) {
+    console.error('Error fetching task:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch task' },
+      { status: 500 }
+    )
+  }
+}
+
 // PATCH /api/tasks/[id] - Update a task
 export async function PATCH(
   request: NextRequest,

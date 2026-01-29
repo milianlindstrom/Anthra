@@ -517,7 +517,7 @@ export async function handleTaskTool(name: string, args: any) {
         
         const summary = `Found ${tasks.length} task(s)`;
         const taskList = tasks
-          .map((t: any) => `- [${t.status}] ${t.title} (${t.priority} priority) - Project: ${t.project?.name || t.project_id}`)
+          .map((t: any) => `- [${t.status}] ${t.title} (${t.priority} priority) - ID: ${t.id} - Project: ${t.project?.name || t.project_id}`)
           .join('\n');
 
         return {
