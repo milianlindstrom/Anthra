@@ -81,14 +81,20 @@ export default function OnboardingPage() {
     }
   }
 
-  const handleSkip = () => {
-    handleFinish()
-  }
-
-  const handleFinish = () => {
-    // Mark onboarding as complete
-    localStorage.setItem('ulrik_onboarding_completed', 'true')
-    router.push('/kanban')
+  const handleFinish = async () => {
+    try {
+      // Mark onboarding as complete via API
+      await fetch('/api/auth/onboarding-complete', {
+        method: 'POST',
+      })
+      router.push('/')
+      router.refresh()
+    } catch (error) {
+      console.error('Error completing onboarding:', error)
+      // Still redirect even if API call fails
+      router.push('/')
+      router.refresh()
+    }
   }
 
   const slide = slides[currentSlide]
@@ -98,13 +104,6 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-3xl">
-        {/* Skip button */}
-        <div className="flex justify-end mb-4">
-          <Button variant="ghost" size="sm" onClick={handleSkip}>
-            <X className="h-4 w-4 mr-2" />
-            Skip tutorial
-          </Button>
-        </div>
 
         {/* Main card */}
         <Card className="overflow-hidden">

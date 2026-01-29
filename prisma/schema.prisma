@@ -104,3 +104,14 @@ model ApiKey {
   
   @@index([key_hash])
 }
+
+model User {
+  id                  String   @id @default(cuid())
+  username            String   @unique
+  password_hash       String
+  onboarding_completed Boolean  @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  
+  @@index([username])
+}

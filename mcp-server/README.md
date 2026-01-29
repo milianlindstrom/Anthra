@@ -18,6 +18,7 @@ The Ulrik MCP Server provides AI assistants (like Claude, ChatGPT, or Open WebUI
 
 - Node.js 20+ installed
 - Ulrik UI running on `http://localhost:3000` (or configure custom URL)
+- **Note**: Ulrik now requires user authentication. You'll need to create an account and login before using the MCP server.
 
 ### Installation
 

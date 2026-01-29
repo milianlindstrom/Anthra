@@ -22,6 +22,11 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Ulrik",
   description: "A minimal task management system",
+  icons: {
+    icon: '/ulriklogo.svg',
+    shortcut: '/ulriklogo.svg',
+    apple: '/ulriklogo.svg',
+  },
 };
 
 export default function RootLayout({

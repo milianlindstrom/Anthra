@@ -79,7 +79,12 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
       )}>
       {/* Logo/Header */}
       <div className="p-6 border-b">
-        <Link href="/kanban" className="flex items-center gap-2">
+        <Link href="/kanban" className="flex items-center gap-3">
+          <img 
+            src="/ulriklogo.svg" 
+            alt="Ulrik" 
+            className="h-8 w-8"
+          />
           <div className="text-xl font-medium tracking-tight">ULRIK</div>
         </Link>
       </div>

@@ -1,16 +1,21 @@
 # Ulrik
 
-A minimal task management system with SQLite backend, Next.js frontend, and AI integration via Model Context Protocol (MCP). Features a Kanban board, Gantt timeline view, and powerful MCP server for AI assistants.
+A minimal, AI-native task management system with SQLite backend, Next.js frontend, and AI integration via Model Context Protocol (MCP). Features a Kanban board, Gantt timeline view, local authentication, mandatory onboarding, and a powerful MCP server for AI assistants.
 
 ## Features
 
 ### Core Features
+- **Local Authentication**: JWT-based user authentication with secure session management
+- **Mandatory Onboarding**: One-time onboarding flow that guides new users through the system
+- **Personalized Dashboard**: Welcome message with username and key performance indicators (KPIs)
 - **Kanban Board**: Drag tasks between 5 stages (Backlog → To Do → In Progress → Review → Done)
 - **Gantt Timeline**: Visual timeline showing task duration and deadlines
 - **Project Management**: Organize tasks into projects with custom colors and icons
-- **Priority Management**: Low, medium, and high priority levels
+- **Priority Management**: Low, medium, and high priority levels with subtle color indicators
 - **Task Tracking**: Track estimated hours and due dates
-- **Dark Mode**: Default dark theme with clean, minimal design
+- **Minimalist Design**: Charcoal-based dark theme with sharp angles, generous negative space, and clean typography
+- **Two-Font System**: IBM Plex Sans for UI/body text, JetBrains Mono for technical elements
+- **Sidebar Navigation**: Project-centric navigation with persistent project selection
 - **Analytics Dashboard**: Track completion rates, velocity, and project health
 
 ### Advanced Task Management ✨
@@ -29,13 +34,17 @@ A minimal task management system with SQLite backend, Next.js frontend, and AI i
   - Progress tracking (X/Y completed)
   - Checkbox toggles for quick completion
   
-- **Onboarding Flow**: Interactive tutorial for new users
+- **Onboarding Flow**: Mandatory interactive tutorial for new users
   - 5-slide walkthrough covering all features
   - Keyboard navigation support
-  - Can be skipped or revisited anytime
+  - One-time completion tracked in database
+  - Required before accessing the main application
 
 ### Security 🔒
-- **API Key Authentication**: Secure API access with key management
+- **Local User Authentication**: JWT-based authentication with secure httpOnly cookies
+- **User Accounts**: Username/password authentication with SHA-256 password hashing
+- **Session Management**: 30-day session tokens with automatic renewal
+- **API Key Authentication**: Secure API access with key management for MCP integration
 - **Settings UI**: Generate and manage multiple API keys
 - **Development Mode**: Optional authentication bypass for local dev
 - **Last Used Tracking**: Monitor API key usage
@@ -74,9 +83,12 @@ A minimal task management system with SQLite backend, Next.js frontend, and AI i
 - TypeScript
 - Prisma ORM + SQLite
 - Tailwind CSS
-- shadcn/ui components
+- shadcn/ui components (customized for minimalist design)
+- IBM Plex Sans (UI/body text)
+- JetBrains Mono (technical elements)
 - @dnd-kit for drag-and-drop
 - gantt-task-react for timeline view
+- Lucide icons
 
 ### MCP Server
 - Model Context Protocol SDK
@@ -174,14 +186,28 @@ See [mcp-server/README.md](mcp-server/README.md) for detailed MCP server documen
 
 ## Usage
 
+### Getting Started
+
+1. **Sign Up**: Create a new account at `/signup`
+2. **Login**: Authenticate at `/login`
+3. **Onboarding**: Complete the mandatory onboarding flow
+4. **Dashboard**: View your personalized dashboard with welcome message and KPIs
+
 ### Web Interface
+
+#### Dashboard (`/`)
+- **Welcome Message**: Personalized greeting with username
+- **Quick Links**: Access to Kanban, Projects, and Analytics
+- **KPIs**: Key performance indicators (coming soon)
 
 #### Kanban Board (`/kanban`)
 
 - **Drag and Drop**: Drag task cards between columns to update their status
-- **Filter by Project**: Use the dropdown to filter tasks by project
-- **Create Task**: Click "New Task" button to add a new task
+- **Project Context**: Tasks automatically filtered by selected project in sidebar
+- **Bulk Actions**: Select multiple tasks and update their status simultaneously
+- **Create Task**: Click "New Task" button to add a new task (pre-filled with current project)
 - **Delete Task**: Click the trash icon on any task card
+- **Priority Indicators**: Subtle background color tints (blue/yellow/red) indicate priority
 
 #### Gantt Timeline (`/gantt`)
 
@@ -262,6 +288,13 @@ See [mcp-server/README.md](mcp-server/README.md) for complete MCP documentation 
 - `active`: Whether template is generating tasks
 - `last_generated_at`, `next_generation_at`: Scheduling
 
+**User** model:
+- `id`: Unique identifier
+- `username`: Unique username
+- `password_hash`: SHA-256 hashed password
+- `onboarding_completed`: Boolean flag for onboarding status
+- `created_at`, `updated_at`: Timestamps
+
 **ApiKey** model:
 - `id`: Unique identifier
 - `key_hash`: SHA-256 hashed API key
@@ -274,7 +307,7 @@ See [mcp-server/README.md](mcp-server/README.md) for complete MCP documentation 
 - `slug`: URL-safe identifier
 - `description`: Project description (optional)
 - `color`: Hex color code
-- `icon`: Emoji icon
+- `icon`: Emoji icon (deprecated - logo used instead)
 - `archived`: Soft delete flag
 
 ## API Endpoints
@@ -313,6 +346,14 @@ See [mcp-server/README.md](mcp-server/README.md) for complete MCP documentation 
 - `POST /api/recurring/generate` - Generate tasks from templates
 - `GET /api/recurring/generate?action=pending-briefings` - Get pending AI briefings
 
+### Authentication Endpoints
+
+- `POST /api/auth/signup` - Create new user account
+- `POST /api/auth/login` - Authenticate user
+- `POST /api/auth/logout` - Clear session
+- `GET /api/auth/session` - Get current user session
+- `POST /api/auth/onboarding-complete` - Mark onboarding as completed
+
 ### API Key Endpoints
 
 - `GET /api/auth/api-keys` - List API keys
@@ -348,22 +389,34 @@ See [mcp-server/README.md](mcp-server/README.md) for detailed tool documentation
 ulrik/
 ├── app/                          # Next.js UI
 │   ├── api/
+│   │   ├── auth/                # Authentication routes (login, signup, session)
 │   │   ├── tasks/               # Task API routes
 │   │   └── projects/            # Project API routes
 │   ├── kanban/                  # Kanban board page
 │   ├── gantt/                   # Gantt timeline page
 │   ├── analytics/               # Analytics dashboard
-│   └── layout.tsx               # Root layout with navigation
+│   ├── login/                   # Login page
+│   ├── signup/                  # Signup page
+│   ├── onboarding/              # Mandatory onboarding flow
+│   ├── page.tsx                 # Dashboard with welcome message
+│   └── layout.tsx               # Root layout with sidebar navigation
 ├── components/
-│   ├── ui/                      # shadcn/ui base components
+│   ├── ui/                      # shadcn/ui base components (customized)
+│   ├── sidebar.tsx              # Main sidebar navigation
+│   ├── mobile-sidebar.tsx       # Mobile sidebar toggle
 │   ├── kanban-column.tsx        # Kanban column component
 │   ├── task-card.tsx            # Task card with drag support
 │   ├── new-task-dialog.tsx      # Create task dialog
 │   └── custom-gantt.tsx         # Gantt chart component
+├── contexts/
+│   └── project-context.tsx      # Global project selection context
 ├── lib/
 │   ├── db.ts                    # Prisma client instance
+│   ├── auth-server.ts           # Authentication utilities (JWT, cookies)
+│   ├── auth.ts                  # API key authentication
 │   ├── types.ts                 # TypeScript types
 │   └── utils.ts                 # Utility functions
+├── middleware.ts                # Next.js middleware for auth & onboarding
 ├── shared/                      # Shared types between UI and MCP
 │   └── types.ts                 # Task, Project interfaces
 ├── mcp-server/                  # MCP Server for AI integration
@@ -444,12 +497,38 @@ npm run build        # Build TypeScript
 npm run typecheck    # Type checking
 ```
 
+## Design System
+
+### Typography
+- **Body/UI Text**: IBM Plex Sans (Medium weight, 500)
+- **Headers**: IBM Plex Sans (Semibold weight, 600)
+- **Technical Elements**: JetBrains Mono (Medium weight, 500, tighter letter spacing)
+  - Task IDs, time estimates, priority badges, status badges
+
+### Color Palette
+- **Background**: Near-black (#000000 / hsl(0 0% 3%))
+- **Primary**: Charcoal (#333333 / hsl(0 0% 20%))
+- **Cards**: Dark charcoal (#0d0d0d / hsl(0 0% 5%))
+- **Borders**: Subtle gray (hsl(0 0% 12%))
+- **Priority Indicators**: Subtle faded tints
+  - Low: Blue (bg-blue-500/5)
+  - Medium: Yellow (bg-yellow-500/5)
+  - High: Red (bg-red-500/5)
+
+### Design Principles
+- **Sharp Angles**: No rounded corners (border-radius: 0px)
+- **Minimal Shadows**: Flat design with minimal depth
+- **Negative Space**: Generous padding and spacing throughout
+- **Clean Icons**: Lucide icon library for consistent iconography
+
 ## Notes
 
-- **No Authentication**: This is a single-tenant system with no user management
+- **Local Authentication**: JWT-based user authentication with secure sessions
+- **Mandatory Onboarding**: All new users must complete onboarding before accessing the app
+- **Project Context**: Global project selection persists across page reloads
 - **Local Storage**: All data is stored in a local SQLite database
 - **Mobile Responsive**: Optimized for desktop but works on mobile
-- **Dark Mode Default**: Dark theme enabled by default
+- **Dark Mode Default**: Minimalist charcoal dark theme enabled by default
 - **AI-Ready**: Connect any MCP-compatible AI assistant (Claude, Open WebUI, Cline, etc.)
 
 ## Documentation
