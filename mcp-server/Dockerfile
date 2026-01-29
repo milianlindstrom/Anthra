@@ -2,15 +2,15 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY mcp-server/package*.json ./
+COPY package*.json ./
 
 # Install ALL dependencies (including dev dependencies for building)
 RUN npm ci
 
 # Copy source code
-COPY mcp-server/src ./src
-COPY mcp-server/shared ./shared
-COPY mcp-server/tsconfig.json ./
+COPY src ./src
+COPY shared ./shared
+COPY tsconfig.json ./
 
 # Build TypeScript
 RUN npm run build
@@ -20,7 +20,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Copy package files
-COPY mcp-server/package*.json ./
+COPY package*.json ./
 
 # Install only production dependencies
 RUN npm ci --only=production

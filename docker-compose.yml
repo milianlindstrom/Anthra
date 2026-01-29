@@ -1,7 +1,7 @@
 services:
   ulrik-ui:
     build:
-      context: .
+      context: ./mcp-server
       dockerfile: Dockerfile
     container_name: ulrik-ui
     ports:
