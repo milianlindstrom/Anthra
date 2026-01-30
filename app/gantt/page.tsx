@@ -1,18 +1,29 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { Task } from '@/lib/types'
-import { ProjectSwitcher } from '@/components/project-switcher'
+import { useProject } from '@/contexts/project-context'
 import { CustomGantt } from '@/components/custom-gantt'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function GanttPage() {
   const [tasks, setTasks] = useState<Task[]>([])
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('all')
+  const { selectedProjectId } = useProject()
+  const router = useRouter()
+
+  // Redirect if no project selected
+  useEffect(() => {
+    if (!selectedProjectId || selectedProjectId === 'all') {
+      router.push('/projects')
+    }
+  }, [selectedProjectId, router])
 
   const fetchTasks = async () => {
+    if (!selectedProjectId || selectedProjectId === 'all') return
+    
     try {
-      const res = await fetch('/api/tasks')
+      const res = await fetch(`/api/tasks?project_id=${selectedProjectId}`)
       const data = await res.json()
       if (Array.isArray(data)) {
         setTasks(data)
@@ -27,12 +38,9 @@ export default function GanttPage() {
 
   useEffect(() => {
     fetchTasks()
-  }, [])
+  }, [selectedProjectId])
 
   const filteredTasks = useMemo(() => {
-    if (selectedProjectId === 'all') {
-      return tasks
-    }
     return tasks.filter(t => t.project_id === selectedProjectId)
   }, [tasks, selectedProjectId])
 
@@ -43,11 +51,6 @@ export default function GanttPage() {
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Gantt Timeline</h1>
           <p className="text-sm text-muted-foreground">Visualize task schedules and dependencies</p>
         </div>
-        <ProjectSwitcher
-          value={selectedProjectId}
-          onChange={setSelectedProjectId}
-          className="w-full sm:w-[250px]"
-        />
       </div>
 
       <CustomGantt tasks={filteredTasks} />

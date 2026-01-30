@@ -10,18 +10,29 @@ import { AlertTriangle, CheckCircle2, Clock, Package, TrendingUp, AlertCircle, D
 import { EmptyState } from '@/components/empty-state'
 import { LoadingSkeleton } from '@/components/loading-skeleton'
 import { Button } from '@/components/ui/button'
-import { ProjectSwitcher } from '@/components/project-switcher'
+import { useRouter } from 'next/navigation'
+import { useProject } from '@/contexts/project-context'
 
 export default function AnalyticsPage() {
   const [allTasks, setAllTasks] = useState<Task[]>([])
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('all')
+  const { selectedProjectId } = useProject()
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [archiving, setArchiving] = useState(false)
 
+  // Redirect if no project selected
+  useEffect(() => {
+    if (!selectedProjectId || selectedProjectId === 'all') {
+      router.push('/projects')
+    }
+  }, [selectedProjectId, router])
+
   useEffect(() => {
     const fetchTasks = async () => {
+      if (!selectedProjectId || selectedProjectId === 'all') return
+      
       try {
-        const res = await fetch('/api/tasks?archived=false')
+        const res = await fetch(`/api/tasks?project_id=${selectedProjectId}&archived=false`)
         const data = await res.json()
         setAllTasks(Array.isArray(data) ? data : [])
       } catch (error) {
@@ -32,12 +43,9 @@ export default function AnalyticsPage() {
       }
     }
     fetchTasks()
-  }, [])
+  }, [selectedProjectId])
 
   const tasks = useMemo(() => {
-    if (selectedProjectId === 'all') {
-      return allTasks
-    }
     return allTasks.filter(t => t.project_id === selectedProjectId)
   }, [allTasks, selectedProjectId])
 
@@ -62,9 +70,7 @@ export default function AnalyticsPage() {
   }
 
   const exportAsJSON = () => {
-    const filename = selectedProjectId === 'all' 
-      ? `ulrik-tasks-${format(new Date(), 'yyyy-MM-dd')}.json`
-      : `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.json`
+    const filename = `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.json`
     
     const dataStr = JSON.stringify(tasks, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
@@ -96,9 +102,7 @@ export default function AnalyticsPage() {
       ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
     ].join('\n')
     
-    const filename = selectedProjectId === 'all'
-      ? `ulrik-tasks-${format(new Date(), 'yyyy-MM-dd')}.csv`
-      : `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.csv`
+    const filename = `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.csv`
     
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -269,14 +273,9 @@ export default function AnalyticsPage() {
           <div>
             <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
             <p className="text-sm text-muted-foreground">
-              Insights and metrics for {selectedProjectId === 'all' ? 'all projects' : 'selected project'}
+              Insights and metrics for this project
             </p>
           </div>
-          <ProjectSwitcher
-            value={selectedProjectId}
-            onChange={setSelectedProjectId}
-            className="w-[250px]"
-          />
         </div>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">

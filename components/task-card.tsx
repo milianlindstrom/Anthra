@@ -4,7 +4,7 @@ import { useDraggable } from '@dnd-kit/core'
 import { Task } from '@/lib/types'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
-import { Clock, Trash2, Calendar, AlertCircle, Lock, ListChecks, Repeat } from 'lucide-react'
+import { Clock, Trash2, Calendar, AlertCircle, Lock, ListChecks, Repeat, Archive, ArchiveRestore } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import { format, differenceInDays, isBefore, isToday, isTomorrow } from 'date-fns'
@@ -16,9 +16,12 @@ interface TaskCardProps {
   onClick?: (task: Task) => void
   isSelected?: boolean
   onSelect?: (taskId: string, selected: boolean) => void
+  showArchiveButton?: boolean
+  onArchive?: (taskId: string) => void
+  onUnarchive?: (taskId: string) => void
 }
 
-export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelected = false, onSelect }: TaskCardProps) {
+export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelected = false, onSelect, showArchiveButton = false, onArchive, onUnarchive }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   })
@@ -147,6 +150,39 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
               <Badge variant="outline" className="time-estimate text-xs font-mono px-1.5 py-0.5 font-medium">
                 {task.estimated_hours}h
               </Badge>
+            )}
+            {showArchiveButton && task.status === 'done' && (
+              task.archived ? (
+                onUnarchive && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 hover:bg-primary/10 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onUnarchive(task.id)
+                    }}
+                    title="Unarchive task"
+                  >
+                    <ArchiveRestore className="h-3 w-3" />
+                  </Button>
+                )
+              ) : (
+                onArchive && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 hover:bg-muted hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onArchive(task.id)
+                    }}
+                    title="Archive task"
+                  >
+                    <Archive className="h-3 w-3" />
+                  </Button>
+                )
+              )
             )}
             {onDelete && (
               <Button

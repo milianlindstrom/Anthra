@@ -59,8 +59,8 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
 
   const handleProjectSelect = (projectId: string) => {
     setSelectedProjectId(projectId)
-    // Navigate to kanban when project changes
-    if (pathname !== '/kanban' && pathname !== '/projects') {
+    // Navigate to kanban when project changes (unless already on projects page)
+    if (pathname !== '/projects') {
       router.push('/kanban')
     }
   }
@@ -81,7 +81,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
       )}>
       {/* Logo/Header */}
       <div className="p-6 border-b">
-        <Link href="/kanban" className="flex items-center gap-3">
+        <Link href="/projects" className="flex items-center gap-3">
           <img 
             src="/ulriklogo.svg" 
             alt="Ulrik" 
@@ -111,23 +111,6 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
           {/* Projects List */}
           {isProjectsOpen && (
             <div className="space-y-1">
-              {/* All Projects Option */}
-              <button
-                onClick={() => handleProjectSelect('all')}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                  selectedProjectId === 'all'
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <FolderOpen className="h-4 w-4 shrink-0" />
-                <span className="flex-1 text-left">All Projects</span>
-                {selectedProjectId === 'all' && (
-                  <Check className="h-4 w-4 text-primary" />
-                )}
-              </button>
-
               {/* Individual Projects */}
               {projects.map((project) => (
                 <button
@@ -163,45 +146,12 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
             </div>
           )}
 
-          {/* Project Views - Only show when a project is selected */}
+          {/* Project Views - Only show when a specific project is selected */}
           {selectedProjectId !== 'all' && selectedProject && (
             <div className="pt-4 border-t">
               <div className="mb-2 px-3 py-2">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <span className="truncate">{selectedProject.name}</span>
-                </div>
-              </div>
-              <div className="space-y-1 pl-4">
-                {navigation.map((item) => {
-                  const Icon = item.icon
-                  const isActive = pathname === item.href
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2  text-sm transition-colors",
-                        isActive
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      <Icon className="h-4 w-4 shrink-0" />
-                      <span>{item.name}</span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* All Projects Views - Show when "All Projects" is selected */}
-          {selectedProjectId === 'all' && (
-            <div className="pt-4 border-t">
-              <div className="mb-2 px-3 py-2">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <FolderOpen className="h-4 w-4" />
-                  <span>All Projects</span>
                 </div>
               </div>
               <div className="space-y-1 pl-4">

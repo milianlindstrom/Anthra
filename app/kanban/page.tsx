@@ -16,11 +16,20 @@ import { QuickAddFab } from '@/components/quick-add-fab'
 import { TaskDetailsModal } from '@/components/task-details-modal'
 import { Confetti } from '@/components/confetti'
 import { isToday, isTomorrow, differenceInDays, isBefore } from 'date-fns'
+import { useRouter } from 'next/navigation'
 
 export default function KanbanPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [allTasks, setAllTasks] = useState<Task[]>([])
   const { selectedProjectId } = useProject()
+  const router = useRouter()
+
+  // Redirect if no project selected
+  useEffect(() => {
+    if (!selectedProjectId || selectedProjectId === 'all') {
+      router.push('/projects')
+    }
+  }, [selectedProjectId, router])
   const [activeTask, setActiveTask] = useState<Task | null>(null)
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState<string>('all')
@@ -30,6 +39,7 @@ export default function KanbanPage() {
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [focusedTaskIndex, setFocusedTaskIndex] = useState<number | null>(null)
+  const [showArchivedInDone, setShowArchivedInDone] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -40,19 +50,31 @@ export default function KanbanPage() {
   )
 
   const fetchTasks = useCallback(async () => {
+    if (!selectedProjectId || selectedProjectId === 'all') return
+    
     setLoading(true)
     try {
-      const res = await fetch('/api/tasks')
-      const data = await res.json()
-      if (Array.isArray(data)) {
-        setAllTasks(data)
+      // Fetch non-archived tasks for the selected project, and also fetch archived tasks when toggle is on
+      const [normalRes, archivedRes] = await Promise.all([
+        fetch(`/api/tasks?project_id=${selectedProjectId}`), // Non-archived tasks
+        showArchivedInDone ? fetch(`/api/tasks?project_id=${selectedProjectId}&archived=true`) : Promise.resolve(null)
+      ])
+      const normalData = await normalRes.json()
+      let archivedData: Task[] = []
+      if (archivedRes) {
+        archivedData = await archivedRes.json()
       }
+      
+      // Combine non-archived and archived tasks
+      const allTasksData = Array.isArray(normalData) ? normalData : []
+      const archivedTasksData = Array.isArray(archivedData) ? archivedData : []
+      setAllTasks([...allTasksData, ...archivedTasksData])
     } catch (error) {
       console.error('Error fetching tasks:', error)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showArchivedInDone, selectedProjectId])
 
   useEffect(() => {
     fetchTasks()
@@ -92,13 +114,8 @@ export default function KanbanPage() {
   }, [tasks, focusedTaskIndex])
 
   useEffect(() => {
-    // Filter tasks when project or filter selection changes
-    let filtered = allTasks
-
-    // Apply project filter
-    if (selectedProjectId !== 'all') {
-      filtered = filtered.filter(t => t.project_id === selectedProjectId)
-    }
+    // Filter tasks when filter selection changes (project is already filtered in fetchTasks)
+    let filtered = allTasks.filter(t => t.project_id === selectedProjectId)
 
     // Apply quick filter
     const today = new Date()
@@ -282,11 +299,61 @@ export default function KanbanPage() {
     }
   }
 
-  const backlogTasks = tasks.filter(t => t.status === 'backlog')
-  const todoTasks = tasks.filter(t => t.status === 'todo')
-  const inProgressTasks = tasks.filter(t => t.status === 'in-progress')
-  const reviewTasks = tasks.filter(t => t.status === 'review')
-  const doneTasks = tasks.filter(t => t.status === 'done')
+  const handleArchiveTask = async (taskId: string) => {
+    try {
+      await fetch(`/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: true }),
+      })
+      fetchTasks()
+    } catch (error) {
+      console.error('Error archiving task:', error)
+    }
+  }
+
+  const handleUnarchiveTask = async (taskId: string) => {
+    try {
+      await fetch(`/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: false }),
+      })
+      fetchTasks()
+    } catch (error) {
+      console.error('Error unarchiving task:', error)
+    }
+  }
+
+  const backlogTasks = tasks.filter(t => t.status === 'backlog' && !t.archived)
+  const todoTasks = tasks.filter(t => t.status === 'todo' && !t.archived)
+  const inProgressTasks = tasks.filter(t => t.status === 'in-progress' && !t.archived)
+  const reviewTasks = tasks.filter(t => t.status === 'review' && !t.archived)
+  const doneTasks = tasks.filter(t => {
+    if (t.status !== 'done') return false
+    // Show archived tasks in Done column only if toggle is enabled
+    if (t.archived) return showArchivedInDone
+    return true
+  })
+
+  const handleBulkArchiveDone = async () => {
+    const doneTaskIds = doneTasks.filter(t => !t.archived).map(t => t.id)
+    if (doneTaskIds.length === 0) return
+
+    try {
+      const updatePromises = doneTaskIds.map(taskId =>
+        fetch(`/api/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ archived: true }),
+        })
+      )
+      await Promise.all(updatePromises)
+      fetchTasks()
+    } catch (error) {
+      console.error('Error bulk archiving tasks:', error)
+    }
+  }
 
   const quickFilters = [
     { id: 'all', label: 'All Tasks', count: allTasks.length },
@@ -498,6 +565,12 @@ export default function KanbanPage() {
             accentColor="green"
             selectedTaskIds={selectedTaskIds}
             onTaskSelect={handleTaskSelect}
+            showArchivedToggle={true}
+            showArchived={showArchivedInDone}
+            onToggleArchived={setShowArchivedInDone}
+            onArchiveTask={handleArchiveTask}
+            onUnarchiveTask={handleUnarchiveTask}
+            onBulkArchive={handleBulkArchiveDone}
           />
         </div>
 
@@ -505,6 +578,7 @@ export default function KanbanPage() {
           {activeTask ? <TaskCard task={activeTask} isDragging /> : null}
         </DragOverlay>
       </DndContext>
+      )}
 
       <NewTaskDialog
         open={isNewTaskOpen}

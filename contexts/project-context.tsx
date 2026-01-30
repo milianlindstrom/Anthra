@@ -12,7 +12,7 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const [selectedProjectId, setSelectedProjectIdState] = useState<string>('all')
+  const [selectedProjectId, setSelectedProjectIdState] = useState<string>('')
 
   useEffect(() => {
     // Load persisted project selection on mount
@@ -24,8 +24,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   const setSelectedProjectId = (id: string) => {
     setSelectedProjectIdState(id)
-    // Persist to localStorage
-    if (id !== 'all') {
+    // Persist to localStorage (only if not empty)
+    if (id && id !== 'all') {
       localStorage.setItem(STORAGE_KEY, id)
     } else {
       localStorage.removeItem(STORAGE_KEY)

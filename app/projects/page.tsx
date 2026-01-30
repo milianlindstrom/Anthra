@@ -43,9 +43,18 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch(`/api/projects?archived=${showArchived}`)
-      const data = await res.json()
-      setProjects(data)
+      // Fetch both active and archived projects, then filter client-side
+      const [activeRes, archivedRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/projects?archived=true')
+      ])
+      const activeData = await activeRes.json()
+      const archivedData = await archivedRes.json()
+      const allProjects = [
+        ...(Array.isArray(activeData) ? activeData : []),
+        ...(Array.isArray(archivedData) ? archivedData : [])
+      ]
+      setProjects(allProjects)
     } catch (error) {
       console.error('Error fetching projects:', error)
     }

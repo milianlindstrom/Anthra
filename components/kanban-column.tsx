@@ -4,7 +4,9 @@ import { useDroppable } from '@dnd-kit/core'
 import { Task } from '@/lib/types'
 import { TaskCard } from './task-card'
 import { Badge } from './ui/badge'
+import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
+import { Archive } from 'lucide-react'
 
 interface KanbanColumnProps {
   id: string
@@ -15,6 +17,12 @@ interface KanbanColumnProps {
   accentColor?: 'gray' | 'blue' | 'purple' | 'orange' | 'green'
   selectedTaskIds?: Set<string>
   onTaskSelect?: (taskId: string, selected: boolean) => void
+  showArchivedToggle?: boolean
+  showArchived?: boolean
+  onToggleArchived?: (show: boolean) => void
+  onArchiveTask?: (taskId: string) => void
+  onUnarchiveTask?: (taskId: string) => void
+  onBulkArchive?: () => void
 }
 
 // Minimalist charcoal status colors
@@ -51,12 +59,29 @@ const accentColorClasses = {
   },
 }
 
-export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, accentColor = 'gray', selectedTaskIds, onTaskSelect }: KanbanColumnProps) {
+export function KanbanColumn({ 
+  id, 
+  title, 
+  tasks, 
+  onDeleteTask, 
+  onTaskClick, 
+  accentColor = 'gray', 
+  selectedTaskIds, 
+  onTaskSelect,
+  showArchivedToggle = false,
+  showArchived = false,
+  onToggleArchived,
+  onArchiveTask,
+  onUnarchiveTask,
+  onBulkArchive
+}: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   })
 
   const colors = accentColorClasses[accentColor]
+  const nonArchivedDoneTasks = id === 'done' ? tasks.filter(t => !t.archived) : []
+  const hasNonArchivedDoneTasks = nonArchivedDoneTasks.length > 0
 
   return (
     <div
@@ -68,12 +93,43 @@ export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, acce
       )}
     >
       <div className="flex items-center justify-between px-1 py-2">
-        <h2 className={cn("column-header text-xs font-medium tracking-wider uppercase", colors.header)}>
-          {title}
-        </h2>
-        <Badge variant="secondary" className={cn("text-xs font-mono h-5 min-w-[24px] justify-center", colors.badge)}>
-          {tasks.length}
-        </Badge>
+        <div className="flex items-center gap-2 flex-1">
+          <h2 className={cn("column-header text-xs font-medium tracking-wider uppercase", colors.header)}>
+            {title}
+          </h2>
+          {showArchivedToggle && onToggleArchived && (
+            <label className="flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={showArchived}
+                onChange={(e) => onToggleArchived(e.target.checked)}
+                className="h-3 w-3 border-border text-primary focus:ring-primary cursor-pointer"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <span>Show archived</span>
+            </label>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {showArchivedToggle && onBulkArchive && hasNonArchivedDoneTasks && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-2 text-xs"
+              onClick={(e) => {
+                e.stopPropagation()
+                onBulkArchive()
+              }}
+              title="Archive all non-archived Done tasks"
+            >
+              <Archive className="h-3 w-3 mr-1" />
+              Archive All
+            </Button>
+          )}
+          <Badge variant="secondary" className={cn("text-xs font-mono h-5 min-w-[24px] justify-center", colors.badge)}>
+            {tasks.length}
+          </Badge>
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         {tasks.length === 0 ? (
@@ -93,6 +149,9 @@ export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, acce
               onClick={onTaskClick}
               isSelected={selectedTaskIds?.has(task.id) || false}
               onSelect={onTaskSelect}
+              showArchiveButton={id === 'done'}
+              onArchive={onArchiveTask}
+              onUnarchive={onUnarchiveTask}
             />
           ))
         )}

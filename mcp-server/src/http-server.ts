@@ -53,7 +53,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name.startsWith('create_task') || name.startsWith('list_tasks') ||
         name.startsWith('get_task') || name.startsWith('update_task') ||
         name.startsWith('delete_task') || name.startsWith('move_task') ||
-        name.startsWith('bulk_update_tasks')) {
+        name.startsWith('bulk_update_tasks') || name === 'get_pending_briefings' ||
+        name === 'acknowledge_briefing') {
       return await handleTaskTool(name, args);
     } else if (name.startsWith('list_projects') || name.startsWith('create_project') ||
                name.startsWith('get_project') || name.startsWith('update_project')) {

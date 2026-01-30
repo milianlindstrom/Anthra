@@ -5,10 +5,17 @@ import { prisma } from '@/lib/db'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const includeArchived = searchParams.get('archived') === 'true'
+    const archivedParam = searchParams.get('archived')
+
+    // Handle archived parameter:
+    // - archived=true: only archived projects
+    // - archived=false or no param: only non-archived projects (default)
+    const archivedFilter = archivedParam === 'true' 
+      ? { archived: true } 
+      : { archived: false }
 
     const projects = await prisma.project.findMany({
-      where: includeArchived ? {} : { archived: false },
+      where: archivedFilter,
       include: {
         _count: {
           select: { tasks: true },
