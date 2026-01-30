@@ -235,10 +235,13 @@ export function TaskDetailsModal({ task, open, onOpenChange, onTaskUpdated, onTa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+      <DialogContent 
+        className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto transition-all duration-200"
+        aria-labelledby="task-details-title"
+      >
         <DialogHeader>
           <div className="flex items-start justify-between gap-4">
-            <DialogTitle className="flex-1">
+            <DialogTitle id="task-details-title" className="flex-1">
               {isEditing ? (
                 <Input
                   value={formData.title}

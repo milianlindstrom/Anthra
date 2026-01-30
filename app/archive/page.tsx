@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Archive, RotateCcw, Trash2 } from 'lucide-react'
+import { EmptyState } from '@/components/empty-state'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 
@@ -77,23 +78,19 @@ export default function ArchivePage() {
 
   if (tasks.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Archive</h1>
-        <Card className="text-center py-16">
-          <CardContent>
-            <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">No Archived Tasks</h3>
-            <p className="text-muted-foreground">
-              Tasks in Done status for 7+ days will be automatically archived here.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Archive</h1>
+        <EmptyState
+          icon={Archive}
+          title="No Archived Tasks"
+          description="Tasks in Done status for 7+ days will be automatically archived here."
+        />
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Archive</h1>
         <Badge variant="outline" className="text-sm">

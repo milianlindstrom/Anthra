@@ -7,6 +7,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Badge } from '@/components/ui/badge'
 import { format, isAfter, isBefore, subDays, startOfWeek, endOfWeek, differenceInDays } from 'date-fns'
 import { AlertTriangle, CheckCircle2, Clock, Package, TrendingUp, AlertCircle, Download, FileJson, FileSpreadsheet, Archive } from 'lucide-react'
+import { EmptyState } from '@/components/empty-state'
+import { LoadingSkeleton } from '@/components/loading-skeleton'
 import { Button } from '@/components/ui/button'
 import { ProjectSwitcher } from '@/components/project-switcher'
 
@@ -109,18 +111,11 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Analytics Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Analytics Dashboard</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader>
-                <div className="h-4 bg-muted rounded w-1/2"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-8 bg-muted rounded w-3/4"></div>
-              </CardContent>
-            </Card>
+            <LoadingSkeleton key={i} />
           ))}
         </div>
       </div>
@@ -129,17 +124,13 @@ export default function AnalyticsPage() {
 
   if (tasks.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Analytics Dashboard</h1>
-        <Card className="text-center py-16">
-          <CardContent>
-            <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">No Data Yet</h3>
-            <p className="text-muted-foreground">
-              Complete some tasks to see insights and analytics.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Analytics Dashboard</h1>
+        <EmptyState
+          icon={Package}
+          title="No Data Yet"
+          description="Complete some tasks to see insights and analytics."
+        />
       </div>
     )
   }
@@ -272,7 +263,7 @@ export default function AnalyticsPage() {
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
       <div className="flex flex-col gap-4 mb-8">
         <div className="flex items-center justify-between">
           <div>

@@ -94,7 +94,7 @@ export default async function Home() {
   const data = await getDashboardData()
 
   return (
-    <div className="container mx-auto px-8 py-12 max-w-6xl">
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-12 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-2xl font-medium tracking-tight mb-2">
           Welcome, {user.username}!
@@ -105,7 +105,7 @@ export default async function Home() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Tasks</CardTitle>
@@ -164,7 +164,7 @@ export default async function Home() {
       </div>
 
       {/* Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">Backlog</CardTitle>
@@ -244,7 +244,7 @@ export default async function Home() {
       )}
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         <Link
           href="/kanban"
           className="p-6 border bg-card hover:bg-muted/50 transition-colors"

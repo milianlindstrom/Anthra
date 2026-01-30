@@ -62,7 +62,7 @@ export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, acce
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-col gap-4 p-4 border min-h-[500px] transition-all w-full",
+        "flex flex-col gap-3 md:gap-4 p-3 md:p-4 border min-h-[400px] md:min-h-[500px] transition-all duration-200 w-full",
         "bg-card",
         isOver ? `${colors.border} ${colors.bg} border-2` : "border-border"
       )}
@@ -77,12 +77,12 @@ export function KanbanColumn({ id, title, tasks, onDeleteTask, onTaskClick, acce
       </div>
       <div className="flex flex-col gap-2">
         {tasks.length === 0 ? (
-          <div className="text-center py-16 text-xs text-muted-foreground/40 font-light">
-            {id === 'backlog' && 'Empty'}
-            {id === 'todo' && 'Empty'}
-            {id === 'in-progress' && 'Empty'}
-            {id === 'review' && 'Empty'}
-            {id === 'done' && 'Empty'}
+          <div className="text-center py-12 md:py-16 text-xs text-muted-foreground/40 font-light transition-opacity duration-200">
+            {id === 'backlog' && 'No tasks in backlog'}
+            {id === 'todo' && 'No tasks to do'}
+            {id === 'in-progress' && 'Nothing in progress'}
+            {id === 'review' && 'Nothing to review'}
+            {id === 'done' && 'No completed tasks'}
           </div>
         ) : (
           tasks.map(task => (

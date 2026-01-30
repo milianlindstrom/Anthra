@@ -37,16 +37,16 @@ export default function GanttPage() {
   }, [tasks, selectedProjectId])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Gantt Timeline</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Gantt Timeline</h1>
           <p className="text-sm text-muted-foreground">Visualize task schedules and dependencies</p>
         </div>
         <ProjectSwitcher
           value={selectedProjectId}
           onChange={setSelectedProjectId}
-          className="w-[250px]"
+          className="w-full sm:w-[250px]"
         />
       </div>
 

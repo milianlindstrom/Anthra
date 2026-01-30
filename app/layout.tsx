@@ -6,6 +6,7 @@ import { GlobalSearch } from "@/components/global-search";
 import { Sidebar } from "@/components/sidebar";
 import { ProjectProvider } from "@/contexts/project-context";
 import { MobileSidebar } from "@/components/mobile-sidebar";
+import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 
 const ibmPlexSans = IBM_Plex_Sans({ 
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default function RootLayout({
               {children}
             </main>
             <GlobalSearch />
+            <KeyboardShortcuts />
           </div>
         </ProjectProvider>
       </body>

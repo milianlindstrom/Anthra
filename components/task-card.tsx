@@ -109,12 +109,21 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
       {...attributes}
       onClick={() => onClick?.(task)}
       className={cn(
-        "group cursor-grab active:cursor-grabbing transition-all duration-150",
-        "hover:border-foreground/20",
+        "group cursor-grab active:cursor-grabbing transition-all duration-200 ease-out",
+        "hover:border-foreground/20 hover:shadow-lg",
         "bg-card border",
-        isDragging && "opacity-50",
+        isDragging && "opacity-50 scale-95",
         priorityBackgroundColors[task.priority]
       )}
+      role="button"
+      tabIndex={0}
+      aria-label={`Task: ${task.title}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick?.(task)
+        }
+      }}
     >
       <CardHeader className="pb-2 relative">
         <div className="flex items-start justify-between gap-2">

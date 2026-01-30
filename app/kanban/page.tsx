@@ -8,7 +8,9 @@ import { TaskCard } from '@/components/task-card'
 import { Button } from '@/components/ui/button'
 import { useProject } from '@/contexts/project-context'
 import { Badge } from '@/components/ui/badge'
-import { Plus, X, CheckSquare, Square } from 'lucide-react'
+import { Plus, X, CheckSquare, Square, Inbox } from 'lucide-react'
+import { EmptyState } from '@/components/empty-state'
+import { KanbanColumnSkeleton } from '@/components/loading-skeleton'
 import { NewTaskDialog } from '@/components/new-task-dialog'
 import { QuickAddFab } from '@/components/quick-add-fab'
 import { TaskDetailsModal } from '@/components/task-details-modal'
@@ -26,6 +28,8 @@ export default function KanbanPage() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set())
+  const [loading, setLoading] = useState(true)
+  const [focusedTaskIndex, setFocusedTaskIndex] = useState<number | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -36,6 +40,7 @@ export default function KanbanPage() {
   )
 
   const fetchTasks = useCallback(async () => {
+    setLoading(true)
     try {
       const res = await fetch('/api/tasks')
       const data = await res.json()
@@ -44,12 +49,47 @@ export default function KanbanPage() {
       }
     } catch (error) {
       console.error('Error fetching tasks:', error)
+    } finally {
+      setLoading(false)
     }
   }, [])
 
   useEffect(() => {
     fetchTasks()
   }, [fetchTasks])
+
+  // Keyboard shortcuts (j/k navigation)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if not typing in input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      if (e.key === 'j' || e.key === 'k') {
+        e.preventDefault()
+        const allTaskCards = tasks.flatMap(colTasks => colTasks)
+        if (allTaskCards.length === 0) return
+
+        let newIndex = focusedTaskIndex ?? -1
+        if (e.key === 'j') {
+          newIndex = newIndex < allTaskCards.length - 1 ? newIndex + 1 : 0
+        } else {
+          newIndex = newIndex > 0 ? newIndex - 1 : allTaskCards.length - 1
+        }
+
+        setFocusedTaskIndex(newIndex)
+        const task = allTaskCards[newIndex]
+        if (task) {
+          setSelectedTask(task)
+          setIsDetailsOpen(true)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [tasks, focusedTaskIndex])
 
   useEffect(() => {
     // Filter tasks when project or filter selection changes
@@ -265,13 +305,14 @@ export default function KanbanPage() {
   ]
 
   return (
-    <div className="w-full max-w-[2400px] mx-auto px-8 py-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="w-full max-w-[2400px] mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
         <h1 className="text-xl font-medium tracking-tight">KANBAN</h1>
         <div className="flex items-center gap-2 md:gap-4 flex-wrap">
-          <Button onClick={() => setIsNewTaskOpen(true)} className="hidden md:flex">
+          <Button onClick={() => setIsNewTaskOpen(true)} size="sm" className="md:size-default">
             <Plus className="h-4 w-4 mr-2" />
-            New Task
+            <span className="hidden sm:inline">New Task</span>
+            <span className="sm:hidden">New</span>
           </Button>
         </div>
       </div>
@@ -335,7 +376,7 @@ export default function KanbanPage() {
       )}
 
       {/* Quick Filters */}
-      <div className="flex flex-wrap items-center gap-3 mb-8 pb-6 border-b">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6 md:mb-8 pb-4 md:pb-6 border-b overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
         {quickFilters.map(filter => (
           <Badge
             key={filter.id}
@@ -382,13 +423,32 @@ export default function KanbanPage() {
         )}
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-6 max-w-[2400px] mx-auto">
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 max-w-[2400px] mx-auto">
+          {[...Array(5)].map((_, i) => (
+            <KanbanColumnSkeleton key={i} />
+          ))}
+        </div>
+      ) : tasks.length === 0 ? (
+        <EmptyState
+          icon={Inbox}
+          title="No Tasks Found"
+          description={activeFilter !== 'all' 
+            ? `No tasks match your current filter. Try adjusting your filters or create a new task.`
+            : "Get started by creating your first task. Click 'New Task' to begin."}
+          action={{
+            label: 'Create Task',
+            onClick: () => setIsNewTaskOpen(true)
+          }}
+        />
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 max-w-[2400px] mx-auto">
           <KanbanColumn
             id="backlog"
             title="Backlog"

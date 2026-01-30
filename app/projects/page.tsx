@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Plus, Edit2, Trash2, Archive, ArchiveRestore, FolderOpen } from 'lucide-react'
+import { EmptyState } from '@/components/empty-state'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -162,25 +163,17 @@ export default function ProjectsPage() {
       </div>
 
       {displayProjects.length === 0 ? (
-        <Card className="p-12">
-          <div className="text-center">
-            <FolderOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-            <h3 className="text-lg font-semibold mb-2">
-              {showArchived ? 'No Archived Projects' : 'No Projects Yet'}
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              {showArchived
-                ? 'Archive projects to organize completed work'
-                : 'Create your first project to get started'}
-            </p>
-            {!showArchived && (
-              <Button onClick={() => handleOpenDialog()}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Project
-              </Button>
-            )}
-          </div>
-        </Card>
+        <EmptyState
+          icon={FolderOpen}
+          title={showArchived ? 'No Archived Projects' : 'No Projects Yet'}
+          description={showArchived
+            ? 'Archive projects to organize completed work'
+            : 'Create your first project to get started'}
+          action={!showArchived ? {
+            label: 'Create Project',
+            onClick: () => handleOpenDialog()
+          } : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayProjects.map((project) => (
