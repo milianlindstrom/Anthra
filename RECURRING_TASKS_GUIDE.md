@@ -224,14 +224,14 @@ To automatically generate recurring tasks:
 **Option 1: External Cron**
 ```bash
 # Add to crontab (runs every hour)
-0 * * * * curl -X POST https://your-ulrik.com/api/recurring/generate
+0 * * * * curl -X POST https://your-anthra.com/api/recurring/generate
 ```
 
 **Option 2: System Service**
 ```bash
 # Create systemd timer (Linux)
-# ulrik-recurring.service
-# ulrik-recurring.timer
+# anthra-recurring.service
+# anthra-recurring.timer
 ```
 
 ### Environment Variables

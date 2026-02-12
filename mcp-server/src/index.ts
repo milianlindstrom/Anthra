@@ -12,6 +12,7 @@ import { taskTools, handleTaskTool } from './tools/tasks.js';
 import { projectTools, handleProjectTool } from './tools/projects.js';
 import { analyticsTools, handleAnalyticsTool } from './tools/analytics.js';
 import { sprintTools, handleSprintTool } from './tools/sprints.js';
+import { documentTools, handleDocumentTool } from './tools/documents.js';
 
 // Validate configuration
 validateConfig();
@@ -19,7 +20,7 @@ validateConfig();
 // Create MCP server
 const server = new Server(
   {
-    name: 'ulrik-mcp',
+    name: 'anthra-mcp',
     version: '1.0.0',
   },
   {
@@ -30,7 +31,7 @@ const server = new Server(
 );
 
 // Combine all tools
-const allTools = [...taskTools, ...projectTools, ...analyticsTools, ...sprintTools];
+const allTools = [...taskTools, ...projectTools, ...analyticsTools, ...sprintTools, ...documentTools];
 
 // Handle tool list requests
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -67,6 +68,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                name.startsWith('remove_task_from_sprint') || name.startsWith('update_sprint_task') ||
                name.startsWith('get_sprint_velocity')) {
       return await handleSprintTool(name, args);
+    } else if (name === 'get_context' || name === 'write_ai_reply' || 
+               name === 'search_documents' || name === 'analyze_patterns' || 
+               name === 'route_query') {
+      return await handleDocumentTool(name, args);
     }
 
     throw new Error(`Unknown tool: ${name}`);
@@ -86,7 +91,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 // Start the server
 async function main() {
-  console.error('[MCP] Starting Ulrik MCP Server...');
+  console.error('[MCP] Starting Anthra MCP Server...');
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('[MCP] Server started successfully');

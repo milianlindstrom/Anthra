@@ -12,9 +12,12 @@ import {
   Settings,
   Repeat,
   ChevronRight,
+  ChevronLeft,
   Check,
   Home,
-  Rocket
+  Rocket,
+  Grid3x3,
+  FileText
 } from 'lucide-react'
 import { Project } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -32,6 +35,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const { selectedProjectId, setSelectedProjectId } = useProject()
   const [isProjectsOpen, setIsProjectsOpen] = useState(true)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   useEffect(() => {
     fetchProjects()
@@ -57,6 +61,8 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
     { name: 'Gantt', href: '/gantt', icon: Calendar },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Recurring', href: '/recurring', icon: Repeat },
+    { name: 'Cross-Project', href: '/cross-project', icon: Grid3x3 },
+    { name: 'Documents', href: '/documents', icon: FileText },
     { name: 'Archive', href: '/archive', icon: Archive },
   ]
 
@@ -78,20 +84,34 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
         />
       )}
       <div className={cn(
-        "flex flex-col h-screen bg-background border-r transition-transform fixed md:relative z-50 md:z-auto",
+        "flex flex-col h-screen bg-background border-r border-border/80 transition-all duration-300 fixed md:relative z-50 md:z-auto shadow-refined",
         isOpen === false && onClose ? "-translate-x-full md:translate-x-0" : "translate-x-0",
+        isCollapsed ? "w-16" : "w-64",
         className
       )}>
       {/* Logo/Header */}
-      <div className="p-6 border-b">
-        <Link href="/projects" className="flex items-center gap-3">
+      <div className="p-6 border-b border-border/80 flex items-center justify-between backdrop-blur-sm">
+        <Link href="/projects" className={cn("flex items-center gap-3 group", isCollapsed && "justify-center w-full")}>
           <img 
             src="/ulriklogo.svg" 
-            alt="Ulrik" 
-            className="h-8 w-8"
+            alt="Anthra" 
+            className="h-8 w-8 shrink-0 dark:invert transition-transform group-hover:scale-105"
           />
-          <div className="text-xl font-medium tracking-tight">ULRIK</div>
+          {!isCollapsed && <div className="text-xl font-semibold tracking-tight">ANTHRA</div>}
         </Link>
+        {!onClose && (
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-md hover:bg-accent transition-smooth shrink-0 active:scale-95"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Projects Section */}
@@ -100,15 +120,29 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
           {/* Projects Header */}
           <button
             onClick={() => setIsProjectsOpen(!isProjectsOpen)}
-            className="flex items-center justify-between w-full text-xs font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+            className={cn(
+              "flex items-center justify-between w-full text-xs font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors",
+              isCollapsed && "justify-center"
+            )}
+            title={isCollapsed ? "Projects" : undefined}
           >
-            <span>Projects</span>
-            <ChevronRight 
-              className={cn(
-                "h-4 w-4 transition-transform",
-                isProjectsOpen && "rotate-90"
-              )}
-            />
+            {!isCollapsed && <span>Projects</span>}
+            {!isCollapsed && (
+              <ChevronRight 
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isProjectsOpen && "rotate-90"
+                )}
+              />
+            )}
+            {isCollapsed && (
+              <ChevronRight 
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isProjectsOpen && "rotate-90"
+                )}
+              />
+            )}
           </button>
 
           {/* Projects List */}
@@ -120,20 +154,28 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
                   key={project.id}
                   onClick={() => handleProjectSelect(project.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-smooth active:scale-[0.98] border",
+                    isCollapsed && "justify-center",
                     selectedProjectId === project.id
-                      ? "bg-primary text-primary-foreground font-medium"
-                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground border-primary/50 shadow-refined"
+                      : "border-transparent hover:border-border/50 hover:bg-accent text-muted-foreground hover:text-foreground"
                   )}
+                  title={isCollapsed ? project.name : undefined}
                 >
-                  <span className="flex-1 text-left truncate">{project.name}</span>
-                  {project._count?.tasks !== undefined && (
-                    <span className="text-xs text-muted-foreground shrink-0">
-                      {project._count.tasks}
-                    </span>
-                  )}
-                  {selectedProjectId === project.id && (
-                    <Check className="h-4 w-4 text-primary shrink-0" />
+                  {isCollapsed ? (
+                    <span className="text-lg">{project.icon || '📁'}</span>
+                  ) : (
+                    <>
+                      <span className="flex-1 text-left truncate">{project.name}</span>
+                      {project._count?.tasks !== undefined && (
+                        <span className="text-xs text-muted-foreground shrink-0">
+                          {project._count.tasks}
+                        </span>
+                      )}
+                      {selectedProjectId === project.id && (
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                      )}
+                    </>
                   )}
                 </button>
               ))}
@@ -141,10 +183,14 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
               {/* Manage Projects Link */}
               <Link
                 href="/projects"
-                className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-3"
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-smooth mt-3",
+                  isCollapsed && "justify-center"
+                )}
+                title={isCollapsed ? "Manage Projects" : undefined}
               >
-                <Settings className="h-4 w-4" />
-                <span>Manage Projects</span>
+                <Settings className="h-4 w-4 shrink-0" />
+                {!isCollapsed && <span>Manage Projects</span>}
               </Link>
             </div>
           )}
@@ -152,12 +198,14 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
           {/* Project Views - Only show when a specific project is selected */}
           {selectedProjectId !== 'all' && selectedProject && (
             <div className="pt-4 border-t">
-              <div className="mb-2 px-3 py-2">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <span className="truncate">{selectedProject.name}</span>
+              {!isCollapsed && (
+                <div className="mb-2 px-3 py-2">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <span className="truncate">{selectedProject.name}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-1 pl-4">
+              )}
+              <div className={cn("space-y-1", !isCollapsed && "pl-4")}>
                 {navigation.map((item) => {
                   const Icon = item.icon
                   const isActive = pathname === item.href
@@ -166,14 +214,16 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
                       key={item.name}
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2  text-sm transition-colors",
+                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-smooth border",
+                        isCollapsed && "justify-center",
                         isActive
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          ? "bg-primary/10 text-primary border-primary/30"
+                          : "text-muted-foreground border-transparent hover:border-border/50 hover:bg-accent hover:text-foreground"
                       )}
+                      title={isCollapsed ? item.name : undefined}
                     >
                       <Icon className="h-4 w-4 shrink-0" />
-                      <span>{item.name}</span>
+                      {!isCollapsed && <span>{item.name}</span>}
                     </Link>
                   )
                 })}
@@ -184,16 +234,18 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Footer/Shortcuts */}
-      <div className="p-6 border-t space-y-2 text-xs text-muted-foreground/60">
-        <div className="flex items-center gap-2">
-          <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/⌘ K</kbd>
-          <span>Search</span>
+      {!isCollapsed && (
+        <div className="p-6 border-t space-y-2 text-xs text-muted-foreground/60">
+          <div className="flex items-center gap-2">
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/⌘ K</kbd>
+            <span>Search</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/⌘ N</kbd>
+            <span>Quick Add</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/⌘ N</kbd>
-          <span>Quick Add</span>
-        </div>
-      </div>
+      )}
     </div>
     </>
   )

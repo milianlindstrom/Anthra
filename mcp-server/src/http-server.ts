@@ -11,6 +11,7 @@ import { taskTools, handleTaskTool } from './tools/tasks.js';
 import { projectTools, handleProjectTool } from './tools/projects.js';
 import { analyticsTools, handleAnalyticsTool } from './tools/analytics.js';
 import { sprintTools, handleSprintTool } from './tools/sprints.js';
+import { documentTools, handleDocumentTool } from './tools/documents.js';
 
 // Validate configuration
 validateConfig();
@@ -21,7 +22,7 @@ const PORT = process.env.MCP_SERVER_PORT || 3001;
 // Create MCP server
 const server = new Server(
   {
-    name: 'ulrik-mcp',
+    name: 'anthra-mcp',
     version: '1.0.0',
   },
   {
@@ -32,7 +33,7 @@ const server = new Server(
 );
 
 // Combine all tools
-const allTools = [...taskTools, ...projectTools, ...analyticsTools, ...sprintTools];
+const allTools = [...taskTools, ...projectTools, ...analyticsTools, ...sprintTools, ...documentTools];
 
 // Handle tool list requests
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -69,6 +70,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                name.startsWith('remove_task_from_sprint') || name.startsWith('update_sprint_task') ||
                name.startsWith('get_sprint_velocity')) {
       return await handleSprintTool(name, args);
+    } else if (name.startsWith('get_context') || name.startsWith('write_ai_reply') || 
+               name.startsWith('search_documents') || name.startsWith('analyze_patterns') || 
+               name.startsWith('route_query')) {
+      return await handleDocumentTool(name, args);
     }
 
     throw new Error(`Unknown tool: ${name}`);
@@ -101,7 +106,7 @@ app.post('/messages', express.json(), async (req, res) => {
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', server: 'ulrik-mcp' });
+  res.json({ status: 'ok', server: 'anthra-mcp' });
 });
 
 // Start server

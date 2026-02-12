@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 
 const slides = [
   {
-    title: 'Welcome to Ulrik 🐱',
+    title: 'Welcome to Anthra 🐱',
     subtitle: 'AI-native project management',
     description: 'Built for conversations with your AI, not endless clicking. Let\'s get you started in 60 seconds!',
     icon: Sparkles,
@@ -40,7 +40,7 @@ const slides = [
   {
     title: 'Powered by AI (Optional)',
     subtitle: 'Connect Ziggy or Claude',
-    description: 'Ulrik works great standalone, but it\'s designed for AI. Connect via MCP (Model Context Protocol) to let your AI create tasks, manage priorities, and keep you organized.',
+    description: 'Anthra works great standalone, but it\'s designed for AI. Connect via MCP (Model Context Protocol) to let your AI create tasks, manage priorities, and keep you organized.',
     icon: Zap,
     tips: [
       'Chat naturally: "Add a task to review the budget"',
@@ -185,7 +185,7 @@ export default function OnboardingPage() {
                 >
                   {isLastSlide ? (
                     <>
-                      Start Using Ulrik
+                      Start Using Anthra
                       <CheckCircle2 className="h-4 w-4 ml-2" />
                     </>
                   ) : (

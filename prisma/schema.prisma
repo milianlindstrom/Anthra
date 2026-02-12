@@ -20,8 +20,10 @@ model Project {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  tasks   Task[]
-  sprints Sprint[]
+  tasks        Task[]
+  sprints      Sprint[]
+  contextTypes ContextType[]
+  contextFile  ContextFile?
 }
 
 model Task {
@@ -171,4 +173,105 @@ model VelocityMetric {
   updated_at       DateTime @updatedAt
 
   @@index([sprint_id])
+}
+
+// Document System Models
+
+model ContextType {
+  id         String   @id @default(cuid())
+  name       String
+  project_id String
+  project    Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  artifacts   Artifact[]
+  contextFile ContextFile?
+
+  @@unique([project_id, name])
+  @@index([project_id])
+}
+
+model Artifact {
+  id              String      @id @default(cuid())
+  name            String
+  context_type_id String
+  context_type    ContextType @relation(fields: [context_type_id], references: [id], onDelete: Cascade)
+  status          String      @default("active") // active, archived, completed
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  documents   Document[]
+  contextFile ContextFile?
+
+  @@unique([context_type_id, name])
+  @@index([context_type_id])
+  @@index([status])
+  @@index([updated_at])
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  filename    String
+  artifact_id String
+  artifact    Artifact @relation(fields: [artifact_id], references: [id], onDelete: Cascade)
+  content     String // Markdown content
+  metadata    String? // JSON string for metadata (date, tags, status, etc.)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  aiInteractions AIInteraction[]
+
+  @@unique([artifact_id, filename])
+  @@index([artifact_id])
+  @@index([updated_at])
+}
+
+model ContextFile {
+  id              String   @id @default(cuid())
+  content         String // Markdown content
+  project_id      String?  @unique
+  context_type_id String?  @unique
+  artifact_id     String?  @unique
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  project      Project?     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  context_type ContextType? @relation(fields: [context_type_id], references: [id], onDelete: Cascade)
+  artifact     Artifact?    @relation(fields: [artifact_id], references: [id], onDelete: Cascade)
+
+  @@index([project_id])
+  @@index([context_type_id])
+  @@index([artifact_id])
+}
+
+model AIInteraction {
+  id                 String   @id @default(cuid())
+  document_id        String
+  document           Document @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  section            String? // Section name where flag was found
+  item_text          String // The specific flagged item
+  timestamp          DateTime @default(now())
+  ai_model           String // cursor, claude, local
+  query_sent         String // Full query including inherited context
+  response_received  String // AI's response
+  routing_confidence Float? // Confidence score 0.0-1.0
+  routing_reason     String? // Human-readable explanation
+  user_override      Boolean  @default(false) // Whether user manually overrode routing
+
+  @@index([document_id])
+  @@index([timestamp])
+  @@index([ai_model])
+}
+
+model RoutingPattern {
+  id               String   @id @default(cuid())
+  content_pattern  String // Keywords/phrases that triggered routing
+  suggested_model  String // Model that was suggested
+  corrected_model  String? // Model user corrected to (null if accepted)
+  timestamp        DateTime @default(now())
+  confidence_score Float // Confidence at time of decision
+
+  @@index([timestamp])
+  @@index([suggested_model])
 }

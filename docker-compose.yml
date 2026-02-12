@@ -1,9 +1,11 @@
 services:
-  ulrik-ui:
+  anthra-ui:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ulrik-ui
+      args:
+        DATABASE_URL: file:/app/prisma/dev.db
+    container_name: anthra-ui
     ports:
       - "3000:3000"
     volumes:
@@ -14,40 +16,40 @@ services:
       - NODE_ENV=production
     restart: unless-stopped
     networks:
-      - ulrik-network
+      - anthra-network
 
-  ulrik-mcp:
+  anthra-mcp:
     build:
       context: ./mcp-server
       dockerfile: Dockerfile
-    container_name: ulrik-mcp
+    container_name: anthra-mcp
     command: tail -f /dev/null
     environment:
-      - ULRIK_API_URL=http://ulrik-ui:3000
+      - ANTHRA_API_URL=http://anthra-ui:3000
       - MCP_SERVER_PORT=3001
     depends_on:
-      - ulrik-ui
+      - anthra-ui
     networks:
-      - ulrik-network
+      - anthra-network
 
-  ulrik-mcp-http:
+  anthra-mcp-http:
     build:
       context: ./mcp-server
       dockerfile: Dockerfile
-    container_name: ulrik-mcp-http
+    container_name: anthra-mcp-http
     command: ["node", "dist/src/http-server.js"]
     ports:
       - "3001:3001"
     environment:
-      - ULRIK_API_URL=http://ulrik-ui:3000
+      - ANTHRA_API_URL=http://anthra-ui:3000
       - MCP_SERVER_PORT=3001
     depends_on:
-      - ulrik-ui
+      - anthra-ui
     networks:
-      - ulrik-network
+      - anthra-network
 
 networks:
-  ulrik-network:
+  anthra-network:
     driver: bridge
 
 volumes:

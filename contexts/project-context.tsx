@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
-const STORAGE_KEY = 'ulrik-selected-project-id'
+const STORAGE_KEY = 'anthra-selected-project-id'
 
 interface ProjectContextType {
   selectedProjectId: string

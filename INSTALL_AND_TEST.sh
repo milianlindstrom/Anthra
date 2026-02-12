@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Ulrik MCP Server - Installation and Test Script
+# Anthra MCP Server - Installation and Test Script
 # This script installs dependencies and tests the complete setup
 
 set -e  # Exit on error
 
 echo "=================================================="
-echo "  Ulrik MCP Server - Installation & Test Script"
+echo "  Anthra MCP Server - Installation & Test Script"
 echo "=================================================="
 echo ""
 
@@ -120,8 +120,8 @@ if [ "$UI_RUNNING" = true ]; then
     print_info "Testing MCP server connection..."
     
     # Start MCP server in background and test
-    export ULRIK_API_URL=http://localhost:3000
-    timeout 5s node dist/index.js > /tmp/ulrik-mcp-test.log 2>&1 &
+    export ANTHRA_API_URL=http://localhost:3000
+    timeout 5s node dist/index.js > /tmp/anthra-mcp-test.log 2>&1 &
     MCP_PID=$!
     sleep 2
     
@@ -130,7 +130,7 @@ if [ "$UI_RUNNING" = true ]; then
         kill $MCP_PID 2>/dev/null || true
     else
         print_error "MCP server failed to start"
-        cat /tmp/ulrik-mcp-test.log
+        cat /tmp/anthra-mcp-test.log
         exit 1
     fi
 else

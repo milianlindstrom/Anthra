@@ -1,6 +1,6 @@
-# Ulrik MCP Server - Testing Checklist
+# Anthra MCP Server - Testing Checklist
 
-Use this checklist to verify your Ulrik MCP server installation is working correctly.
+Use this checklist to verify your Anthra MCP server installation is working correctly.
 
 ## Pre-Installation Checks
 
@@ -73,14 +73,14 @@ ls -la dist/
 
 ```bash
 cd mcp-server
-export ULRIK_API_URL=http://localhost:3000
+export ANTHRA_API_URL=http://localhost:3000
 node dist/index.js
 ```
 
 **Expected Output:**
 ```
-[MCP] Starting Ulrik MCP Server...
-[Config] Ulrik API URL: http://localhost:3000
+[MCP] Starting Anthra MCP Server...
+[Config] Anthra API URL: http://localhost:3000
 [Config] MCP Server Port: 3001
 [MCP] Server started successfully
 [MCP] Ready to receive requests via stdio
@@ -125,7 +125,7 @@ docker-compose up -d
 - [ ] No crash loops
 
 ```bash
-docker-compose logs ulrik-mcp
+docker-compose logs anthra-mcp
 ```
 
 - [ ] Shows MCP server startup messages
@@ -157,11 +157,11 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/ABSOLUTE/PATH/ulrik/mcp-server/dist/index.js"],
+      "args": ["/ABSOLUTE/PATH/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -178,16 +178,16 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 4. **Check tools:**
 - [ ] Click tools icon (🔌)
-- [ ] See "ulrik" in tool list
+- [ ] See "anthra" in tool list
 - [ ] 15 tools listed
 
 5. **Test basic query:**
 
-Ask Claude: "List my projects in Ulrik"
+Ask Claude: "List my projects in Anthra"
 
 - [ ] Claude responds without error
 - [ ] Shows project list
-- [ ] Data matches Ulrik UI
+- [ ] Data matches Anthra UI
 
 6. **Test task creation:**
 
@@ -195,7 +195,7 @@ Ask Claude: "Create a task called 'Test MCP integration' in any project with hig
 
 - [ ] Claude creates task
 - [ ] Returns task ID
-- [ ] Task visible in Ulrik UI
+- [ ] Task visible in Anthra UI
 - [ ] Priority is high
 
 7. **Test recommendations:**
@@ -340,7 +340,7 @@ curl -X POST http://localhost:3000/api/tasks \
 - [ ] Message is clear
 
 4. **API server down:**
-- [ ] Stop Ulrik UI
+- [ ] Stop Anthra UI
 - [ ] Try using MCP tools
 - [ ] Connection error returned
 - [ ] Doesn't crash server
@@ -402,7 +402,7 @@ Complete this realistic workflow:
 3. [ ] Ask Claude: "Create 3 tasks in Testing project: Setup, Implementation, Testing"
 4. [ ] Ask Claude: "What should I work on?"
 5. [ ] Ask Claude: "Move the first task to in-progress"
-6. [ ] Check Ulrik UI - verify all changes
+6. [ ] Check Anthra UI - verify all changes
 7. [ ] Ask Claude: "How is Testing project doing?"
 8. [ ] Ask Claude: "Mark Setup task as done"
 9. [ ] Verify in UI
@@ -447,4 +447,4 @@ _________________________________________________
 
 ---
 
-**All tests passing? You're ready to use Ulrik with AI! 🎉**
+**All tests passing? You're ready to use Anthra with AI! 🎉**

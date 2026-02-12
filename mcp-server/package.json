@@ -1,7 +1,7 @@
 {
-  "name": "ulrik-mcp",
+  "name": "anthra-mcp",
   "version": "1.0.0",
-  "description": "Model Context Protocol server for Ulrik task management",
+  "description": "Model Context Protocol server for Anthra task management",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "mcp",
     "model-context-protocol",
     "task-management",
-    "ulrik"
+    "anthra"
   ],
   "author": "",
   "license": "MIT",

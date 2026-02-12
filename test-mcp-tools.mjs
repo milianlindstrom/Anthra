@@ -17,7 +17,7 @@ const { handleProjectTool } = await import('./mcp-server/dist/src/tools/projects
 const { handleAnalyticsTool } = await import('./mcp-server/dist/src/tools/analytics.js');
 const { handleSprintTool } = await import('./mcp-server/dist/src/tools/sprints.js');
 
-const API_URL = process.env.ULRIK_API_URL || 'http://localhost:3000';
+const API_URL = process.env.ANTHRA_API_URL || 'http://localhost:3000';
 
 const results = {
   passed: [],

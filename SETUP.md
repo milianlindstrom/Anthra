@@ -1,6 +1,6 @@
 # Quick Setup Guide
 
-Follow these steps to get Ulrik running:
+Follow these steps to get Anthra running:
 
 ## 1. Install Dependencies
 ```bash

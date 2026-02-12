@@ -106,8 +106,8 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
           "fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50",
           "h-14 w-14 rounded-full",
           "bg-primary text-primary-foreground",
-          "shadow-lg hover:shadow-xl",
-          "transition-all duration-200",
+          "shadow-refined-lg hover:shadow-refined-xl",
+          "transition-spring",
           "hover:scale-110 active:scale-95",
           "flex items-center justify-center",
           "group"
@@ -191,7 +191,7 @@ export function QuickAddFab({ onTaskCreated }: QuickAddFabProps) {
 
           <div className="border-t pt-3 mt-2">
             <p className="text-xs text-muted-foreground text-center">
-              Tip: Press <kbd className="px-1.5 py-0.5 bg-muted text-xs">Ctrl/Cmd + K</kbd> anytime to quick add
+              Tip: Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs">Ctrl/Cmd + K</kbd> anytime to quick add
             </p>
           </div>
         </DialogContent>

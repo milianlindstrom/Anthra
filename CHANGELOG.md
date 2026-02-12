@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Ulrik will be documented in this file.
+All notable changes to Anthra will be documented in this file.
 
 ## [Unreleased]
 
@@ -32,7 +32,7 @@ All notable changes to Ulrik will be documented in this file.
   - Navigation links nested under selected project
   - Persistent project selection across page reloads
   - Mobile-responsive with toggle
-- **Logo Implementation**: Ulrik logo integrated throughout
+- **Logo Implementation**: Anthra logo integrated throughout
   - Sidebar header
   - Login and signup pages
   - Favicon configuration

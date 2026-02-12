@@ -12,6 +12,14 @@ export default function GanttPage() {
   const { selectedProjectId } = useProject()
   const router = useRouter()
 
+  useEffect(() => {
+    const handleTaskUpdate = () => {
+      fetchTasks()
+    }
+    window.addEventListener('taskUpdated', handleTaskUpdate)
+    return () => window.removeEventListener('taskUpdated', handleTaskUpdate)
+  }, [])
+
   // Redirect if no project selected
   useEffect(() => {
     if (!selectedProjectId || selectedProjectId === 'all') {

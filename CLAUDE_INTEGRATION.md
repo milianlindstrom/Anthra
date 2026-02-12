@@ -1,10 +1,10 @@
-# Integrating Ulrik with Claude Desktop
+# Integrating Anthra with Claude Desktop
 
-This guide walks you through connecting the Ulrik MCP server to Claude Desktop for AI-powered task management.
+This guide walks you through connecting the Anthra MCP server to Claude Desktop for AI-powered task management.
 
 ## Prerequisites
 
-1. ✅ Ulrik UI running on `http://localhost:3000`
+1. ✅ Anthra UI running on `http://localhost:3000`
 2. ✅ Claude Desktop installed ([download here](https://claude.ai/download))
 3. ✅ Node.js 20+ installed
 
@@ -28,39 +28,39 @@ The config file location depends on your OS:
 
 If the file doesn't exist, create it.
 
-## Step 3: Add Ulrik MCP Server
+## Step 3: Add Anthra MCP Server
 
-Open the config file and add the Ulrik server configuration:
+Open the config file and add the Anthra server configuration:
 
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
       "args": [
-        "/absolute/path/to/ulrik/mcp-server/dist/index.js"
+        "/absolute/path/to/anthra/mcp-server/dist/index.js"
       ],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
 }
 ```
 
-**Important**: Replace `/absolute/path/to/ulrik` with the actual absolute path to your Ulrik installation.
+**Important**: Replace `/absolute/path/to/anthra` with the actual absolute path to your Anthra installation.
 
 ### Finding Your Absolute Path
 
 **macOS/Linux:**
 ```bash
-cd /path/to/ulrik
+cd /path/to/anthra
 pwd
 ```
 
 **Windows PowerShell:**
 ```powershell
-cd C:\path\to\ulrik
+cd C:\path\to\anthra
 (Get-Location).Path
 ```
 
@@ -70,13 +70,13 @@ cd C:\path\to\ulrik
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
       "args": [
-        "/Users/john/Projects/ulrik/mcp-server/dist/index.js"
+        "/Users/john/Projects/anthra/mcp-server/dist/index.js"
       ],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -87,13 +87,13 @@ cd C:\path\to\ulrik
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
       "args": [
-        "C:\\Users\\John\\Projects\\ulrik\\mcp-server\\dist\\index.js"
+        "C:\\Users\\John\\Projects\\anthra\\mcp-server\\dist\\index.js"
       ],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -116,7 +116,7 @@ In Claude Desktop, look for the 🔌 tools icon. Click it to see available tools
 
 Start a conversation with Claude:
 
-> **You:** "What projects do I have in Ulrik?"
+> **You:** "What projects do I have in Anthra?"
 
 Claude will use the `list_projects` tool to fetch your projects.
 
@@ -132,16 +132,16 @@ Claude will use `create_task` to add it to your system.
 
 ### Custom API URL
 
-If your Ulrik UI is running on a different port or host:
+If your Anthra UI is running on a different port or host:
 
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/absolute/path/to/ulrik/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://192.168.1.100:3000"
+        "ANTHRA_API_URL": "http://192.168.1.100:3000"
       }
     }
   }
@@ -150,16 +150,16 @@ If your Ulrik UI is running on a different port or host:
 
 ### Running Over Network
 
-If Ulrik is on another machine:
+If Anthra is on another machine:
 
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/absolute/path/to/ulrik/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://your-server-ip:3000"
+        "ANTHRA_API_URL": "http://your-server-ip:3000"
       }
     }
   }
@@ -185,7 +185,7 @@ If Ulrik is on another machine:
 
 ### "Failed to Connect" Errors
 
-1. **Check Ulrik is running**: 
+1. **Check Anthra is running**: 
    ```bash
    curl http://localhost:3000/api/tasks
    ```
@@ -195,7 +195,7 @@ If Ulrik is on another machine:
    node --version  # Should be 20+
    ```
 
-3. **Check environment variables**: Ensure `ULRIK_API_URL` matches where Ulrik is running
+3. **Check environment variables**: Ensure `ANTHRA_API_URL` matches where Anthra is running
 
 ### Permission Errors
 
@@ -206,11 +206,11 @@ chmod +x mcp-server/dist/index.js
 
 ### Network Connection Issues
 
-If Ulrik UI and Claude are on the same machine but connection fails:
+If Anthra UI and Claude are on the same machine but connection fails:
 
 1. Try `127.0.0.1` instead of `localhost`:
    ```json
-   "ULRIK_API_URL": "http://127.0.0.1:3000"
+   "ANTHRA_API_URL": "http://127.0.0.1:3000"
    ```
 
 2. Check firewall settings

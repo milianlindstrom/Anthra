@@ -1,8 +1,8 @@
 # MCP Quick Start Guide
 
-Get your Ulrik MCP server running with AI assistants in 5 minutes.
+Get your Anthra MCP server running with AI assistants in 5 minutes.
 
-## 1. Start Ulrik UI
+## 1. Start Anthra UI
 
 ```bash
 ./start-dev.sh
@@ -21,14 +21,14 @@ npm run build
 ## 3. Test MCP Server
 
 ```bash
-export ULRIK_API_URL=http://localhost:3000
+export ANTHRA_API_URL=http://localhost:3000
 node dist/index.js
 ```
 
 You should see:
 ```
-[MCP] Starting Ulrik MCP Server...
-[Config] Ulrik API URL: http://localhost:3000
+[MCP] Starting Anthra MCP Server...
+[Config] Anthra API URL: http://localhost:3000
 [MCP] Server started successfully
 ```
 
@@ -43,7 +43,7 @@ cd mcp-server
 pwd
 ```
 
-Copy the output (example: `/Users/you/ulrik/mcp-server`)
+Copy the output (example: `/Users/you/anthra/mcp-server`)
 
 ### Edit Claude Config
 
@@ -55,11 +55,11 @@ Add this (replace with your path):
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/YOUR/PATH/ulrik/mcp-server/dist/index.js"],
+      "args": ["/YOUR/PATH/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -74,7 +74,7 @@ Close and reopen Claude Desktop completely.
 
 In Claude Desktop, try:
 
-> "What projects do I have in Ulrik?"
+> "What projects do I have in Anthra?"
 
 Claude should list your projects using the MCP tools.
 
@@ -92,7 +92,7 @@ Claude should list your projects using the MCP tools.
 
 **Tools don't show up?**
 - Check path is absolute (starts with `/` or `C:\`)
-- Verify Ulrik UI is running on port 3000
+- Verify Anthra UI is running on port 3000
 - Check Claude logs in `~/Library/Logs/Claude/`
 
 **Connection errors?**
@@ -102,7 +102,7 @@ curl http://localhost:3000/api/tasks
 
 # Test MCP server manually
 cd mcp-server
-ULRIK_API_URL=http://localhost:3000 node dist/index.js
+ANTHRA_API_URL=http://localhost:3000 node dist/index.js
 ```
 
 **Need more help?**

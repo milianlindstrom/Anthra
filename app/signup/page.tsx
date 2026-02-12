@@ -56,14 +56,14 @@ export default function SignupPage() {
         <CardHeader>
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/ulriklogo.svg" 
-              alt="Ulrik" 
+              src="/anthralogo.svg" 
+              alt="Anthra" 
               className="h-12 w-12"
             />
           </div>
           <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
           <CardDescription>
-            Create an account to get started with Ulrik
+            Create an account to get started with Anthra
           </CardDescription>
         </CardHeader>
         <CardContent>

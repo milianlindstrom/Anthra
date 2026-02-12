@@ -84,9 +84,30 @@ export async function PATCH(
 
     const updateData: any = {}
     
-    if (body.title !== undefined) updateData.title = body.title
+    if (body.title !== undefined) {
+      updateData.title = body.title
+      // Smart labels: Auto-update priority if title contains blocking keywords
+      if (body.priority === undefined) {
+        const titleLower = body.title.toLowerCase()
+        if (titleLower.includes('smoke test') || 
+            titleLower.includes('deployment') || 
+            titleLower.includes('deploy') ||
+            titleLower.includes('blocking') ||
+            titleLower.includes('blocker')) {
+          updateData.priority = 'high'
+        }
+      }
+    }
     if (body.description !== undefined) updateData.description = body.description
     if (body.priority !== undefined) updateData.priority = body.priority
+    
+    // Smart labels: Check if task is blocking others and auto-update priority
+    const blockingCount = await prisma.taskDependency.count({
+      where: { depends_on_task_id: id },
+    })
+    if (blockingCount > 0 && body.priority !== 'high' && updateData.priority !== 'high') {
+      updateData.priority = 'high'
+    }
     if (body.project_id !== undefined) updateData.project_id = body.project_id
     if (body.estimated_hours !== undefined) updateData.estimated_hours = body.estimated_hours
     if (body.archived !== undefined) updateData.archived = body.archived

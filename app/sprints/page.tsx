@@ -5,6 +5,7 @@ import { Plus, Edit2, Trash2, Calendar, Rocket, CheckCircle2, Clock, Play } from
 import { EmptyState } from '@/components/empty-state'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useProject } from '@/contexts/project-context'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,6 @@ import { Sprint, Project, SprintStatus } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
-import { useProject } from '@/contexts/project-context'
 
 export default function SprintsPage() {
   const [sprints, setSprints] = useState<(Sprint & { total_points?: number })[]>([])
@@ -146,6 +146,67 @@ export default function SprintsPage() {
     )
   }
 
+  const [tasks, setTasks] = useState<any[]>([])
+  const [sprintSuggestions, setSprintSuggestions] = useState<any>(null)
+
+  useEffect(() => {
+    if (selectedProjectId && selectedProjectId !== 'all') {
+      fetchTasksForSuggestions()
+    }
+  }, [selectedProjectId])
+
+  const fetchTasksForSuggestions = async () => {
+    try {
+      const res = await fetch(`/api/tasks?project_id=${selectedProjectId}&archived=false`)
+      const data = await res.json()
+      setTasks(Array.isArray(data) ? data : [])
+      
+      // Calculate suggestions
+      const doneTasks = data.filter((t: any) => t.status === 'done')
+      const last3Done = doneTasks
+        .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+        .slice(0, 3)
+      
+      const totalHours = last3Done.reduce((sum: number, t: any) => sum + (t.estimated_hours || 0), 0)
+      const completedThisWeek = doneTasks.filter((t: any) => {
+        const updated = new Date(t.updated_at)
+        const weekAgo = new Date()
+        weekAgo.setDate(weekAgo.getDate() - 7)
+        return updated >= weekAgo
+      }).length
+
+      setSprintSuggestions({
+        last3Hours: totalHours,
+        completedThisWeek,
+        totalTasks: data.length,
+        doneCount: doneTasks.length,
+      })
+    } catch (error) {
+      console.error('Error fetching tasks for suggestions:', error)
+    }
+  }
+
+  const handleAutoCreateSprint = async () => {
+    if (!sprintSuggestions || sprintSuggestions.completedThisWeek === 0) return
+    
+    const today = new Date()
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+    
+    const startDate = weekAgo.toISOString().split('T')[0]
+    const endDate = today.toISOString().split('T')[0]
+    
+    setFormData({
+      name: `Sprint ${sprints.length + 1} - Auto Created`,
+      description: `Auto-created sprint for ${sprintSuggestions.completedThisWeek} completed tasks`,
+      start_date: startDate,
+      end_date: endDate,
+      project_id: selectedProjectId && selectedProjectId !== 'all' ? selectedProjectId : '',
+      status: 'completed',
+    })
+    setIsDialogOpen(true)
+  }
+
   const filteredSprints = sprints.filter(s => {
     if (selectedProjectId && selectedProjectId !== 'all') {
       return s.project_id === selectedProjectId
@@ -169,15 +230,65 @@ export default function SprintsPage() {
       </div>
 
       {filteredSprints.length === 0 ? (
-        <EmptyState
-          icon={Rocket}
-          title="No sprints yet"
-          description="Create your first sprint to start planning your work"
-          action={{
-            label: 'Create Sprint',
-            onClick: () => handleOpenDialog(),
-          }}
-        />
+        <div className="space-y-6">
+          {sprintSuggestions && (
+            <Card className="border-primary/50 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="text-lg">Sprint Suggestions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {sprintSuggestions.last3Hours > 0 && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Your last 3 tasks took <strong>{sprintSuggestions.last3Hours.toFixed(1)}h</strong> to complete.
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Create a 1-week sprint with ~{Math.ceil(sprintSuggestions.last3Hours / 8 * 10)} tasks?
+                    </p>
+                    <Button onClick={() => {
+                      const today = new Date()
+                      const weekFromNow = new Date()
+                      weekFromNow.setDate(weekFromNow.getDate() + 7)
+                      
+                      setFormData({
+                        name: `Sprint ${sprints.length + 1}`,
+                        description: '',
+                        start_date: today.toISOString().split('T')[0],
+                        end_date: weekFromNow.toISOString().split('T')[0],
+                        project_id: selectedProjectId && selectedProjectId !== 'all' ? selectedProjectId : '',
+                        status: 'planned',
+                      })
+                      setIsDialogOpen(true)
+                    }}>
+                      Create Suggested Sprint
+                    </Button>
+                  </div>
+                )}
+                {sprintSuggestions.completedThisWeek > 0 && (
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      You've completed <strong>{sprintSuggestions.completedThisWeek}</strong> tasks this week.
+                    </p>
+                    <Button variant="outline" onClick={handleAutoCreateSprint}>
+                      Create Retroactive Sprint
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+          <EmptyState
+            icon={Rocket}
+            title="No sprints yet"
+            description={sprintSuggestions 
+              ? "Use the suggestions above or create your first sprint to start planning your work"
+              : "Create your first sprint to start planning your work"}
+            action={{
+              label: 'Create Sprint',
+              onClick: () => handleOpenDialog(),
+            }}
+          />
+        </div>
       ) : (
         <div className="space-y-4">
           {filteredSprints.map((sprint) => {

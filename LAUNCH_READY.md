@@ -1,8 +1,8 @@
-# 🚀 Ulrik is Launch Ready!
+# 🚀 Anthra is Launch Ready!
 
 ## ✅ All Features Implemented
 
-All production features have been successfully implemented, tested, and documented. Ulrik is now ready for production use!
+All production features have been successfully implemented, tested, and documented. Anthra is now ready for production use!
 
 ## 📦 What's Included
 
@@ -80,7 +80,7 @@ All production features have been successfully implemented, tested, and document
 ### 1. Start the Application
 
 ```bash
-cd /home/milian/Documents/Ulrik
+cd /home/milian/Documents/Anthra
 npm run dev
 ```
 
@@ -103,11 +103,11 @@ Update MCP server configuration:
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/home/milian/Documents/Ulrik/mcp-server/dist/index.js"],
+      "args": ["/home/milian/Documents/Anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000",
+        "ANTHRA_API_URL": "http://localhost:3000",
         "API_KEY": "your_generated_api_key_here"
       }
     }
@@ -133,7 +133,7 @@ All documentation is complete and available:
 ```bash
 # .env
 DATABASE_URL="file:./prisma/dev.db"
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 REQUIRE_AUTH=false  # Set to true in production
 ```
 
@@ -276,7 +276,7 @@ docker-compose up -d
 
 ## 🎊 Final Notes
 
-**Ulrik is now production-ready!**
+**Anthra is now production-ready!**
 
 All features are:
 - ✅ Fully implemented

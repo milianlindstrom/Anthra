@@ -1,8 +1,8 @@
-# Ulrik MCP Server - Implementation Summary
+# Anthra MCP Server - Implementation Summary
 
 ## 🎉 Project Successfully Restructured & MCP Server Built
 
-This document summarizes the complete restructuring of the Ulrik project into a monorepo with MCP server integration.
+This document summarizes the complete restructuring of the Anthra project into a monorepo with MCP server integration.
 
 ---
 
@@ -114,7 +114,7 @@ mcp-server/
 ```
 ┌─────────────────┐         ┌──────────────────┐         ┌─────────────┐
 │                 │         │                  │         │             │
-│   AI Clients    │ ◄─────► │   MCP Server     │ ◄─────► │  Ulrik UI   │
+│   AI Clients    │ ◄─────► │   MCP Server     │ ◄─────► │  Anthra UI   │
 │  (Claude, etc)  │  stdio  │   (Port 3001)    │  HTTP   │ (Port 3000) │
 │                 │         │                  │         │             │
 └─────────────────┘         └──────────────────┘         └─────────────┘
@@ -128,8 +128,8 @@ mcp-server/
 
 **Communication Flow:**
 1. AI client (Claude Desktop) communicates with MCP server via **stdio**
-2. MCP server translates to HTTP calls to Ulrik API (Next.js)
-3. Ulrik API interacts with SQLite database via Prisma
+2. MCP server translates to HTTP calls to Anthra API (Next.js)
+3. Anthra API interacts with SQLite database via Prisma
 4. Responses flow back through the chain
 
 ---
@@ -187,12 +187,12 @@ Expected: `dist/index.js` exists
 ### Test 3: MCP Server Runs
 ```bash
 cd mcp-server
-ULRIK_API_URL=http://localhost:3000 node dist/index.js
+ANTHRA_API_URL=http://localhost:3000 node dist/index.js
 ```
 Expected:
 ```
-[MCP] Starting Ulrik MCP Server...
-[Config] Ulrik API URL: http://localhost:3000
+[MCP] Starting Anthra MCP Server...
+[Config] Anthra API URL: http://localhost:3000
 [MCP] Server started successfully
 ```
 
@@ -200,7 +200,7 @@ Expected:
 1. Build MCP server
 2. Add to `claude_desktop_config.json`
 3. Restart Claude Desktop
-4. Ask: "What projects do I have in Ulrik?"
+4. Ask: "What projects do I have in Anthra?"
 
 Expected: Claude lists your projects
 
@@ -255,20 +255,20 @@ NODE_ENV=development
 
 **MCP Server (mcp-server/.env):**
 ```env
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 MCP_SERVER_PORT=3001
 ```
 
 **Docker (docker-compose.yml):**
 ```yaml
-ulrik-ui:
+anthra-ui:
   environment:
     - DATABASE_URL=file:/app/prisma/dev.db
     - NODE_ENV=production
 
-ulrik-mcp:
+anthra-mcp:
   environment:
-    - ULRIK_API_URL=http://ulrik-ui:3000
+    - ANTHRA_API_URL=http://anthra-ui:3000
     - MCP_SERVER_PORT=3001
 ```
 
@@ -280,11 +280,11 @@ ulrik-mcp:
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/absolute/path/ulrik/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -294,8 +294,8 @@ ulrik-mcp:
 ### Open WebUI
 - Settings → Connections → MCP Servers
 - Command: `node`
-- Args: `/absolute/path/ulrik/mcp-server/dist/index.js`
-- Env: `ULRIK_API_URL=http://localhost:3000`
+- Args: `/absolute/path/anthra/mcp-server/dist/index.js`
+- Env: `ANTHRA_API_URL=http://localhost:3000`
 
 ### Cline (VS Code)
 Add to Cline MCP settings with same configuration as Claude Desktop.
@@ -384,7 +384,7 @@ npm start
 ## 🔍 File Structure Summary
 
 ```
-ulrik/
+anthra/
 ├── app/                          # Next.js UI (existing)
 ├── shared/                       # NEW - Shared types
 │   └── types.ts
@@ -492,7 +492,7 @@ All deliverables completed:
 
 ## 🎉 Conclusion
 
-The Ulrik project has been successfully restructured into a modern monorepo with full MCP server integration. The implementation includes:
+The Anthra project has been successfully restructured into a modern monorepo with full MCP server integration. The implementation includes:
 
 - 15 production-ready MCP tools
 - Complete Docker orchestration

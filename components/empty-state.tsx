@@ -21,7 +21,7 @@ export function EmptyState({ icon: Icon, title, description, action, className }
     <Card className={cn("text-center py-12 md:py-16", className)}>
       <CardContent className="space-y-4">
         <div className="flex justify-center">
-          <div className="rounded-full bg-muted/50 p-4">
+          <div className="rounded-full bg-muted/50 p-4 transition-smooth hover:bg-muted/70">
             <Icon className="h-8 w-8 md:h-12 md:w-12 text-muted-foreground/60" />
           </div>
         </div>

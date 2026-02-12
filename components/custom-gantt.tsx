@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Task } from '@/lib/types'
 import { Card } from './ui/card'
 import { Badge } from './ui/badge'
@@ -11,6 +12,8 @@ interface CustomGanttProps {
 }
 
 export function CustomGantt({ tasks: allTasks }: CustomGanttProps) {
+  const [draggingTask, setDraggingTask] = useState<string | null>(null)
+  const [dragOffset, setDragOffset] = useState(0)
   // Filter tasks that have either (start_date AND due_date) OR (due_date AND estimated_hours)
   const tasks = allTasks.filter(t => {
     if (t.start_date && t.due_date) return true
@@ -165,14 +168,52 @@ export function CustomGantt({ tasks: allTasks }: CustomGanttProps) {
                 <div className="relative h-10 flex items-center">
                   <div
                     className={cn(
-                      "absolute h-8 rounded-md border-2 overflow-hidden",
+                      "absolute h-8 rounded-md border-2 overflow-hidden cursor-move",
                       colors.bg,
                       colors.border,
-                      "shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                      "shadow-lg transition-all hover:shadow-xl hover:scale-105",
+                      draggingTask === task.id && "opacity-50 z-20"
                     )}
                     style={{
-                      left: `${Math.max(0, leftPercent)}%`,
+                      left: `${Math.max(0, leftPercent + (draggingTask === task.id ? dragOffset : 0))}%`,
                       width: `${Math.min(widthPercent, 100 - leftPercent)}%`,
+                    }}
+                    draggable
+                    onDragStart={(e) => {
+                      setDraggingTask(task.id)
+                      e.dataTransfer.effectAllowed = 'move'
+                    }}
+                    onDrag={(e) => {
+                      if (!e.clientX) return
+                      const rect = e.currentTarget.parentElement?.getBoundingClientRect()
+                      if (!rect) return
+                      const x = e.clientX - rect.left
+                      const daysOffset = Math.round((x / rect.width) * totalDays) - daysFromStart
+                      setDragOffset((daysOffset / totalDays) * 100)
+                    }}
+                    onDragEnd={async (e) => {
+                      if (draggingTask === task.id && dragOffset !== 0) {
+                        const daysOffset = Math.round((dragOffset / 100) * totalDays)
+                        const newStartDate = addDays(taskStart, daysOffset)
+                        const newDueDate = addDays(taskEnd, daysOffset)
+                        
+                        try {
+                          await fetch(`/api/tasks/${task.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              start_date: format(newStartDate, 'yyyy-MM-dd'),
+                              due_date: format(newDueDate, 'yyyy-MM-dd'),
+                            }),
+                          })
+                          // Trigger refresh via custom event
+                          window.dispatchEvent(new CustomEvent('taskUpdated'))
+                        } catch (error) {
+                          console.error('Error updating task dates:', error)
+                        }
+                      }
+                      setDraggingTask(null)
+                      setDragOffset(0)
                     }}
                   >
                     {/* Progress overlay */}

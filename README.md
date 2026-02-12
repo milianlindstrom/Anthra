@@ -1,4 +1,4 @@
-# Ulrik
+# Anthra
 
 A minimal, AI-native task management system with SQLite backend, Next.js frontend, and AI integration via Model Context Protocol (MCP). Features a Kanban board, Gantt timeline view, local authentication, mandatory onboarding, and a powerful MCP server for AI assistants.
 
@@ -13,7 +13,12 @@ A minimal, AI-native task management system with SQLite backend, Next.js fronten
 - **Project Management**: Organize tasks into projects with custom colors and icons
 - **Priority Management**: Low, medium, and high priority levels with subtle color indicators
 - **Task Tracking**: Track estimated hours and due dates
-- **Minimalist Design**: Charcoal-based dark theme with sharp angles, generous negative space, and clean typography
+- **Refined Design System**: Apple-inspired aesthetic with rounded corners, subtle shadows, and smooth animations
+  - Premium rounded corners (6-14px system)
+  - Refined shadow elevation system
+  - Glassmorphism effects on modals
+  - Spring-based animations and micro-interactions
+  - Charcoal dark theme with warm hierarchy
 - **Two-Font System**: IBM Plex Sans for UI/body text, JetBrains Mono for technical elements
 - **Sidebar Navigation**: Project-centric navigation with persistent project selection
 - **Analytics Dashboard**: Track completion rates, velocity, and project health
@@ -64,7 +69,7 @@ A minimal, AI-native task management system with SQLite backend, Next.js fronten
 ```
 ┌─────────────────┐         ┌──────────────────┐         ┌─────────────┐
 │                 │         │                  │         │             │
-│   AI Clients    │ ◄─────► │   MCP Server     │ ◄─────► │  Ulrik UI   │
+│   AI Clients    │ ◄─────► │   MCP Server     │ ◄─────► │  Anthra UI   │
 │  (Claude, etc)  │  stdio  │   (Port 3001)    │  HTTP   │ (Port 3000) │
 │                 │         │                  │         │             │
 └─────────────────┘         └──────────────────┘         └─────────────┘
@@ -82,13 +87,14 @@ A minimal, AI-native task management system with SQLite backend, Next.js fronten
 - Next.js 14 (App Router)
 - TypeScript
 - Prisma ORM + SQLite
-- Tailwind CSS
-- shadcn/ui components (customized for minimalist design)
+- Tailwind CSS (with custom design system)
+- shadcn/ui components (refined Apple-inspired aesthetic)
 - IBM Plex Sans (UI/body text)
 - JetBrains Mono (technical elements)
 - @dnd-kit for drag-and-drop
 - gantt-task-react for timeline view
 - Lucide icons
+- Framer Motion for smooth animations
 
 ### MCP Server
 - Model Context Protocol SDK
@@ -166,7 +172,7 @@ npm install
 Create `.env` file:
 
 ```env
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 ```
 
 3. **Run MCP Server**
@@ -231,11 +237,11 @@ npm run build
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/absolute/path/to/ulrik/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -386,7 +392,7 @@ See [mcp-server/README.md](mcp-server/README.md) for detailed tool documentation
 ## Project Structure
 
 ```
-ulrik/
+anthra/
 ├── app/                          # Next.js UI
 │   ├── api/
 │   │   ├── auth/                # Authentication routes (login, signup, session)
@@ -449,7 +455,7 @@ Create a `.env` file in the root directory:
 DATABASE_URL="file:./prisma/dev.db"
 
 # API Configuration (for MCP server)
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 MCP_SERVER_PORT=3001
 
 # Environment

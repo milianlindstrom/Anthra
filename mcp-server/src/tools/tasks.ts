@@ -10,7 +10,7 @@ import type {
 export const taskTools = [
   {
     name: 'create_task',
-    description: 'Create a new task in Ulrik. Requires title and project_id.',
+    description: 'Create a new task in Anthra. Requires title and project_id.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -519,7 +519,7 @@ export const taskTools = [
 ];
 
 export async function handleTaskTool(name: string, args: any) {
-  const apiUrl = CONFIG.ULRIK_API_URL;
+  const apiUrl = CONFIG.ANTHRA_API_URL;
 
   try {
     switch (name) {

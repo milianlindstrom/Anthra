@@ -1,4 +1,16 @@
-# Ulrik - Production-Grade Task Management System
+# Anthra - Production-Grade Task Management System
+
+## 🎨 Design Philosophy
+
+**Refined Apple-Inspired Aesthetic** - "Notion meets Linear meets Raycast"
+- Premium rounded corners (6-14px system) for approachable feel
+- 5-level refined shadow system for depth and elevation
+- Glassmorphism effects on modals with backdrop blur
+- Spring-based animations with natural easing curves
+- Smooth micro-interactions (hover lifts, scale on press)
+- Charcoal dark theme with warm hierarchy
+- IBM Plex Sans + JetBrains Mono typography
+- Technical credibility meets friendly approachability
 
 ## ✨ Core Features
 
@@ -71,10 +83,11 @@ Professional timeline visualization:
 - Statistics panel
 
 ### 🎴 Professional Task Cards
-Beautiful card design with:
-- **Left border accent** by priority color
-- **Hover effects** - subtle lift + shadow increase
-- **Drag feedback** - slight scale + enhanced shadow
+Beautiful refined card design with:
+- **Rounded corners (10px)** - Apple-inspired polish
+- **Hover lift effect** - smooth translateY animation
+- **Refined shadows** - subtle depth with elevation system
+- **Drag feedback** - scale transform + enhanced shadow
 - **Smart due date indicators**:
   - 🔴 Red background: Overdue
   - 🟠 Orange background: Due today or tomorrow

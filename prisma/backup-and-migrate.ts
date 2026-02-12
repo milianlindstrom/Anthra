@@ -47,7 +47,7 @@ async function migrate() {
     // Step 1: Check if database exists
     if (!existsSync(dbPath)) {
       console.log('ℹ️  No existing database found. Will create fresh schema.')
-      await execAsync('cd /home/milian/Documents/Ulrik && npx prisma db push --skip-generate')
+      await execAsync('cd /home/milian/Documents/Anthra && npx prisma db push --skip-generate')
       console.log('✅ New schema created!')
       return
     }
@@ -80,7 +80,7 @@ async function migrate() {
 
     // Step 5: Push new schema
     console.log('\n🔄 Applying new schema...')
-    await execAsync('cd /home/milian/Documents/Ulrik && npx prisma db push --force-reset --skip-generate')
+    await execAsync('cd /home/milian/Documents/Anthra && npx prisma db push --force-reset --skip-generate')
     console.log('   ✓ New schema applied!')
 
     // Step 6: Restore data with projects

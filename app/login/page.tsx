@@ -51,14 +51,14 @@ export default function LoginPage() {
         <CardHeader>
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/ulriklogo.svg" 
-              alt="Ulrik" 
+              src="/anthralogo.svg" 
+              alt="Anthra" 
               className="h-12 w-12"
             />
           </div>
           <CardTitle className="text-2xl text-center">Login</CardTitle>
           <CardDescription>
-            Enter your credentials to access Ulrik
+            Enter your credentials to access Anthra
           </CardDescription>
         </CardHeader>
         <CardContent>

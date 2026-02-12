@@ -11,9 +11,9 @@ The MCP server uses environment variables for configuration. These can be set vi
 
 ## Variables Reference
 
-### ULRIK_API_URL (Required)
+### ANTHRA_API_URL (Required)
 
-The URL where the Ulrik UI/API is running.
+The URL where the Anthra UI/API is running.
 
 **Default:** `http://localhost:3000`
 
@@ -21,16 +21,16 @@ The URL where the Ulrik UI/API is running.
 
 ```bash
 # Local development
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 
 # Custom port
-ULRIK_API_URL=http://localhost:8080
+ANTHRA_API_URL=http://localhost:8080
 
 # Remote server
-ULRIK_API_URL=http://192.168.1.100:3000
+ANTHRA_API_URL=http://192.168.1.100:3000
 
 # Production domain
-ULRIK_API_URL=https://ulrik.example.com
+ANTHRA_API_URL=https://anthra.example.com
 ```
 
 **Important:**
@@ -58,7 +58,7 @@ MCP_SERVER_PORT=8080
 Create `mcp-server/.env`:
 
 ```env
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 MCP_SERVER_PORT=3001
 ```
 
@@ -71,25 +71,25 @@ npm run dev
 
 **Bash/Zsh:**
 ```bash
-export ULRIK_API_URL=http://localhost:3000
+export ANTHRA_API_URL=http://localhost:3000
 npm run dev
 ```
 
 **Fish:**
 ```fish
-set -x ULRIK_API_URL http://localhost:3000
+set -x ANTHRA_API_URL http://localhost:3000
 npm run dev
 ```
 
 **Windows CMD:**
 ```cmd
-set ULRIK_API_URL=http://localhost:3000
+set ANTHRA_API_URL=http://localhost:3000
 npm run dev
 ```
 
 **Windows PowerShell:**
 ```powershell
-$env:ULRIK_API_URL="http://localhost:3000"
+$env:ANTHRA_API_URL="http://localhost:3000"
 npm run dev
 ```
 
@@ -100,11 +100,11 @@ In `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
       "args": ["/path/to/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -117,9 +117,9 @@ In `docker-compose.yml`:
 
 ```yaml
 services:
-  ulrik-mcp:
+  anthra-mcp:
     environment:
-      - ULRIK_API_URL=http://ulrik-ui:3000
+      - ANTHRA_API_URL=http://anthra-ui:3000
       - MCP_SERVER_PORT=3001
 ```
 
@@ -128,50 +128,50 @@ services:
 ### Scenario 1: All on Same Machine
 
 ```env
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 ```
 
 This is the default and works when:
-- Ulrik UI on port 3000
+- Anthra UI on port 3000
 - MCP server running on same machine
 - Claude Desktop on same machine
 
-### Scenario 2: Ulrik on Remote Server
+### Scenario 2: Anthra on Remote Server
 
 ```env
-ULRIK_API_URL=http://192.168.1.50:3000
+ANTHRA_API_URL=http://192.168.1.50:3000
 ```
 
 When:
-- Ulrik UI on another machine
+- Anthra UI on another machine
 - MCP server connects over network
 - Claude Desktop on your local machine
 
 ### Scenario 3: Custom Port
 
 ```env
-ULRIK_API_URL=http://localhost:8080
+ANTHRA_API_URL=http://localhost:8080
 ```
 
 When:
-- Ulrik UI running on non-standard port
+- Anthra UI running on non-standard port
 - Useful for development with multiple apps
 
 ### Scenario 4: Production with SSL
 
 ```env
-ULRIK_API_URL=https://tasks.company.com
+ANTHRA_API_URL=https://tasks.company.com
 ```
 
 When:
-- Ulrik deployed with HTTPS
+- Anthra deployed with HTTPS
 - Domain name configured
 - SSL certificate installed
 
 ### Scenario 5: Docker Compose
 
 ```env
-ULRIK_API_URL=http://ulrik-ui:3000
+ANTHRA_API_URL=http://anthra-ui:3000
 ```
 
 When using Docker Compose:
@@ -184,13 +184,13 @@ When using Docker Compose:
 The MCP server validates configuration on startup:
 
 ```
-[Config] Ulrik API URL: http://localhost:3000
+[Config] Anthra API URL: http://localhost:3000
 [Config] MCP Server Port: 3001
 ```
 
 If configuration is invalid, you'll see an error:
 ```
-Error: ULRIK_API_URL is required
+Error: ANTHRA_API_URL is required
 ```
 
 ## Testing Configuration
@@ -198,7 +198,7 @@ Error: ULRIK_API_URL is required
 ### Test 1: API Reachability
 
 ```bash
-curl $ULRIK_API_URL/api/tasks
+curl $ANTHRA_API_URL/api/tasks
 ```
 
 Should return JSON array of tasks.
@@ -207,13 +207,13 @@ Should return JSON array of tasks.
 
 ```bash
 cd mcp-server
-ULRIK_API_URL=http://localhost:3000 node dist/index.js
+ANTHRA_API_URL=http://localhost:3000 node dist/index.js
 ```
 
 Should show:
 ```
-[MCP] Starting Ulrik MCP Server...
-[Config] Ulrik API URL: http://localhost:3000
+[MCP] Starting Anthra MCP Server...
+[Config] Anthra API URL: http://localhost:3000
 [MCP] Server started successfully
 ```
 
@@ -231,17 +231,17 @@ Claude should successfully call the API.
 
 ```env
 # OK for local development
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 ```
 
 ### Production
 
 ```env
 # Use HTTPS in production
-ULRIK_API_URL=https://ulrik.example.com
+ANTHRA_API_URL=https://anthra.example.com
 
 # Consider authentication headers (future enhancement)
-# ULRIK_API_KEY=your-secret-key
+# ANTHRA_API_KEY=your-secret-key
 ```
 
 **Important:**
@@ -261,9 +261,9 @@ Order of priority (highest to lowest):
 
 Example:
 ```bash
-# .env file has: ULRIK_API_URL=http://localhost:3000
+# .env file has: ANTHRA_API_URL=http://localhost:3000
 # But command line overrides:
-ULRIK_API_URL=http://localhost:8080 npm run dev
+ANTHRA_API_URL=http://localhost:8080 npm run dev
 # Result: Uses http://localhost:8080
 ```
 
@@ -272,14 +272,14 @@ ULRIK_API_URL=http://localhost:8080 npm run dev
 ### Error: "Failed to connect to API"
 
 **Check:**
-1. Is `ULRIK_API_URL` set correctly?
+1. Is `ANTHRA_API_URL` set correctly?
    ```bash
-   echo $ULRIK_API_URL
+   echo $ANTHRA_API_URL
    ```
 
-2. Is Ulrik UI running?
+2. Is Anthra UI running?
    ```bash
-   curl $ULRIK_API_URL/api/tasks
+   curl $ANTHRA_API_URL/api/tasks
    ```
 
 3. Firewall/network issues?
@@ -288,12 +288,12 @@ ULRIK_API_URL=http://localhost:8080 npm run dev
    telnet hostname 3000
    ```
 
-### Error: "ULRIK_API_URL is required"
+### Error: "ANTHRA_API_URL is required"
 
 **Solution:**
 Set the environment variable before running:
 ```bash
-export ULRIK_API_URL=http://localhost:3000
+export ANTHRA_API_URL=http://localhost:3000
 ```
 
 Or create `.env` file.
@@ -303,12 +303,12 @@ Or create `.env` file.
 **Common in Docker:**
 Use `host.docker.internal` instead of `localhost`:
 ```env
-ULRIK_API_URL=http://host.docker.internal:3000
+ANTHRA_API_URL=http://host.docker.internal:3000
 ```
 
 **Or use Docker network:**
 ```env
-ULRIK_API_URL=http://ulrik-ui:3000
+ANTHRA_API_URL=http://anthra-ui:3000
 ```
 
 ## Advanced Configuration
@@ -319,10 +319,10 @@ Create separate env files:
 
 ```bash
 # .env.development
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 
 # .env.production
-ULRIK_API_URL=https://ulrik.company.com
+ANTHRA_API_URL=https://anthra.company.com
 ```
 
 Load with:
@@ -340,14 +340,14 @@ For advanced use cases, modify `mcp-server/src/config.ts`:
 
 ```typescript
 export const CONFIG = {
-  ULRIK_API_URL: process.env.ULRIK_API_URL || detectApiUrl(),
+  ANTHRA_API_URL: process.env.ANTHRA_API_URL || detectApiUrl(),
   MCP_SERVER_PORT: parseInt(process.env.MCP_SERVER_PORT || '3001', 10),
 };
 
 function detectApiUrl() {
   // Custom logic to detect API URL
   if (process.env.NODE_ENV === 'production') {
-    return 'https://ulrik.company.com';
+    return 'https://anthra.company.com';
   }
   return 'http://localhost:3000';
 }

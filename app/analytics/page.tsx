@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
   }
 
   const exportAsJSON = () => {
-    const filename = `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.json`
+    const filename = `anthra-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.json`
     
     const dataStr = JSON.stringify(tasks, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
       ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
     ].join('\n')
     
-    const filename = `ulrik-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.csv`
+    const filename = `anthra-${tasks[0]?.project?.name || 'project'}-${format(new Date(), 'yyyy-MM-dd')}.csv`
     
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -303,8 +303,9 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* Analytics Grid Layout - 2 rows of 4 cards for symmetry */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+        {/* Quick Stats - 4 cards in first row */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Completion Rate</CardTitle>
@@ -360,10 +361,8 @@ export default function AnalyticsPage() {
             </p>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Advanced Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {/* Advanced Metrics - 4 cards in second row */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Recurring Tasks</CardTitle>
@@ -421,7 +420,7 @@ export default function AnalyticsPage() {
         </Card>
       </div>
 
-      {/* Main Charts */}
+      {/* Main Charts - Full width on mobile, 2 cols on lg */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>
@@ -560,7 +559,7 @@ export default function AnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* Health Metrics */}
+      {/* Health Metrics - Full width on mobile, 2 cols on lg */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>

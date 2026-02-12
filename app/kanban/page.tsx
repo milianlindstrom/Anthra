@@ -8,7 +8,7 @@ import { TaskCard } from '@/components/task-card'
 import { Button } from '@/components/ui/button'
 import { useProject } from '@/contexts/project-context'
 import { Badge } from '@/components/ui/badge'
-import { Plus, X, CheckSquare, Square, Inbox } from 'lucide-react'
+import { Plus, X, CheckSquare, Square, Inbox, Layers, Filter } from 'lucide-react'
 import { EmptyState } from '@/components/empty-state'
 import { KanbanColumnSkeleton } from '@/components/loading-skeleton'
 import { NewTaskDialog } from '@/components/new-task-dialog'
@@ -17,6 +17,7 @@ import { TaskDetailsModal } from '@/components/task-details-modal'
 import { Confetti } from '@/components/confetti'
 import { isToday, isTomorrow, differenceInDays, isBefore } from 'date-fns'
 import { useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 export default function KanbanPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -40,6 +41,7 @@ export default function KanbanPage() {
   const [loading, setLoading] = useState(true)
   const [focusedTaskIndex, setFocusedTaskIndex] = useState<number | null>(null)
   const [showArchivedInDone, setShowArchivedInDone] = useState(false)
+  const [swimlaneMode, setSwimlaneMode] = useState<'none' | 'priority' | 'project'>('none')
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -376,6 +378,24 @@ export default function KanbanPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
         <h1 className="text-xl font-medium tracking-tight">KANBAN</h1>
         <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Button
+              variant={swimlaneMode === 'priority' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSwimlaneMode(swimlaneMode === 'priority' ? 'none' : 'priority')}
+            >
+              <Layers className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Priority</span>
+            </Button>
+            <Button
+              variant={swimlaneMode === 'project' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSwimlaneMode(swimlaneMode === 'project' ? 'none' : 'project')}
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Project</span>
+            </Button>
+          </div>
           <Button onClick={() => setIsNewTaskOpen(true)} size="sm" className="md:size-default">
             <Plus className="h-4 w-4 mr-2" />
             <span className="hidden sm:inline">New Task</span>
@@ -491,7 +511,12 @@ export default function KanbanPage() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 max-w-[2400px] mx-auto">
+        <div className={cn(
+          "grid gap-4 md:gap-6 max-w-[2400px] mx-auto",
+          swimlaneMode === 'none' 
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            : "grid-cols-1 lg:grid-cols-5"
+        )}>
           {[...Array(5)].map((_, i) => (
             <KanbanColumnSkeleton key={i} />
           ))}
@@ -515,63 +540,213 @@ export default function KanbanPage() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 max-w-[2400px] mx-auto">
-          <KanbanColumn
-            id="backlog"
-            title="Backlog"
-            tasks={backlogTasks}
-            onDeleteTask={handleDeleteTask}
-            onTaskClick={handleTaskClick}
-            accentColor="gray"
-            selectedTaskIds={selectedTaskIds}
-            onTaskSelect={handleTaskSelect}
-          />
-          <KanbanColumn
-            id="todo"
-            title="To Do"
-            tasks={todoTasks}
-            onDeleteTask={handleDeleteTask}
-            onTaskClick={handleTaskClick}
-            accentColor="blue"
-            selectedTaskIds={selectedTaskIds}
-            onTaskSelect={handleTaskSelect}
-          />
-          <KanbanColumn
-            id="in-progress"
-            title="In Progress"
-            tasks={inProgressTasks}
-            onDeleteTask={handleDeleteTask}
-            onTaskClick={handleTaskClick}
-            accentColor="purple"
-            selectedTaskIds={selectedTaskIds}
-            onTaskSelect={handleTaskSelect}
-          />
-          <KanbanColumn
-            id="review"
-            title="Review"
-            tasks={reviewTasks}
-            onDeleteTask={handleDeleteTask}
-            onTaskClick={handleTaskClick}
-            accentColor="orange"
-            selectedTaskIds={selectedTaskIds}
-            onTaskSelect={handleTaskSelect}
-          />
-          <KanbanColumn
-            id="done"
-            title="Done"
-            tasks={doneTasks}
-            onDeleteTask={handleDeleteTask}
-            onTaskClick={handleTaskClick}
-            accentColor="green"
-            selectedTaskIds={selectedTaskIds}
-            onTaskSelect={handleTaskSelect}
-            showArchivedToggle={true}
-            showArchived={showArchivedInDone}
-            onToggleArchived={setShowArchivedInDone}
-            onArchiveTask={handleArchiveTask}
-            onUnarchiveTask={handleUnarchiveTask}
-            onBulkArchive={handleBulkArchiveDone}
-          />
+          <div className={cn(
+            "grid gap-4 md:gap-6 max-w-[2400px] mx-auto",
+            swimlaneMode === 'none' 
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+              : "grid-cols-1 lg:grid-cols-5"
+          )}>
+          {swimlaneMode === 'priority' ? (
+            // Priority swimlanes
+            ['high', 'medium', 'low'].map(priority => (
+              <div key={priority} className="space-y-2">
+                <div className="text-xs font-medium uppercase text-muted-foreground px-2">
+                  {priority} Priority
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+                  <KanbanColumn
+                    id="backlog"
+                    title="Backlog"
+                    tasks={backlogTasks.filter(t => t.priority === priority)}
+                    onDeleteTask={handleDeleteTask}
+                    onTaskClick={handleTaskClick}
+                    accentColor="gray"
+                    selectedTaskIds={selectedTaskIds}
+                    onTaskSelect={handleTaskSelect}
+                  />
+                  <KanbanColumn
+                    id="todo"
+                    title="To Do"
+                    tasks={todoTasks.filter(t => t.priority === priority)}
+                    onDeleteTask={handleDeleteTask}
+                    onTaskClick={handleTaskClick}
+                    accentColor="blue"
+                    selectedTaskIds={selectedTaskIds}
+                    onTaskSelect={handleTaskSelect}
+                  />
+                  <KanbanColumn
+                    id="in-progress"
+                    title="In Progress"
+                    tasks={inProgressTasks.filter(t => t.priority === priority)}
+                    onDeleteTask={handleDeleteTask}
+                    onTaskClick={handleTaskClick}
+                    accentColor="purple"
+                    selectedTaskIds={selectedTaskIds}
+                    onTaskSelect={handleTaskSelect}
+                  />
+                  <KanbanColumn
+                    id="review"
+                    title="Review"
+                    tasks={reviewTasks.filter(t => t.priority === priority)}
+                    onDeleteTask={handleDeleteTask}
+                    onTaskClick={handleTaskClick}
+                    accentColor="orange"
+                    selectedTaskIds={selectedTaskIds}
+                    onTaskSelect={handleTaskSelect}
+                  />
+                  <KanbanColumn
+                    id="done"
+                    title="Done"
+                    tasks={doneTasks.filter(t => t.priority === priority)}
+                    onDeleteTask={handleDeleteTask}
+                    onTaskClick={handleTaskClick}
+                    accentColor="green"
+                    selectedTaskIds={selectedTaskIds}
+                    onTaskSelect={handleTaskSelect}
+                    showArchivedToggle={priority === 'high'}
+                    showArchived={showArchivedInDone}
+                    onToggleArchived={setShowArchivedInDone}
+                    onArchiveTask={handleArchiveTask}
+                    onUnarchiveTask={handleUnarchiveTask}
+                    onBulkArchive={handleBulkArchiveDone}
+                  />
+                </div>
+              </div>
+            ))
+          ) : swimlaneMode === 'project' ? (
+            // Project swimlanes - group by project
+            (() => {
+              const projects = Array.from(new Set(tasks.map(t => t.project_id)))
+              return projects.map(projectId => {
+                const project = tasks.find(t => t.project_id === projectId)?.project
+                return (
+                  <div key={projectId} className="space-y-2">
+                    <div className="text-xs font-medium uppercase text-muted-foreground px-2 flex items-center gap-2">
+                      {project?.icon} {project?.name || 'Unknown Project'}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+                      <KanbanColumn
+                        id="backlog"
+                        title="Backlog"
+                        tasks={backlogTasks.filter(t => t.project_id === projectId)}
+                        onDeleteTask={handleDeleteTask}
+                        onTaskClick={handleTaskClick}
+                        accentColor="gray"
+                        selectedTaskIds={selectedTaskIds}
+                        onTaskSelect={handleTaskSelect}
+                      />
+                      <KanbanColumn
+                        id="todo"
+                        title="To Do"
+                        tasks={todoTasks.filter(t => t.project_id === projectId)}
+                        onDeleteTask={handleDeleteTask}
+                        onTaskClick={handleTaskClick}
+                        accentColor="blue"
+                        selectedTaskIds={selectedTaskIds}
+                        onTaskSelect={handleTaskSelect}
+                      />
+                      <KanbanColumn
+                        id="in-progress"
+                        title="In Progress"
+                        tasks={inProgressTasks.filter(t => t.project_id === projectId)}
+                        onDeleteTask={handleDeleteTask}
+                        onTaskClick={handleTaskClick}
+                        accentColor="purple"
+                        selectedTaskIds={selectedTaskIds}
+                        onTaskSelect={handleTaskSelect}
+                      />
+                      <KanbanColumn
+                        id="review"
+                        title="Review"
+                        tasks={reviewTasks.filter(t => t.project_id === projectId)}
+                        onDeleteTask={handleDeleteTask}
+                        onTaskClick={handleTaskClick}
+                        accentColor="orange"
+                        selectedTaskIds={selectedTaskIds}
+                        onTaskSelect={handleTaskSelect}
+                      />
+                      <KanbanColumn
+                        id="done"
+                        title="Done"
+                        tasks={doneTasks.filter(t => t.project_id === projectId)}
+                        onDeleteTask={handleDeleteTask}
+                        onTaskClick={handleTaskClick}
+                        accentColor="green"
+                        selectedTaskIds={selectedTaskIds}
+                        onTaskSelect={handleTaskSelect}
+                        showArchivedToggle={projectId === projects[0]}
+                        showArchived={showArchivedInDone}
+                        onToggleArchived={setShowArchivedInDone}
+                        onArchiveTask={handleArchiveTask}
+                        onUnarchiveTask={handleUnarchiveTask}
+                        onBulkArchive={handleBulkArchiveDone}
+                      />
+                    </div>
+                  </div>
+                )
+              })
+            })()
+          ) : (
+            // Normal view (no swimlanes)
+            <>
+              <KanbanColumn
+                id="backlog"
+                title="Backlog"
+                tasks={backlogTasks}
+                onDeleteTask={handleDeleteTask}
+                onTaskClick={handleTaskClick}
+                accentColor="gray"
+                selectedTaskIds={selectedTaskIds}
+                onTaskSelect={handleTaskSelect}
+              />
+              <KanbanColumn
+                id="todo"
+                title="To Do"
+                tasks={todoTasks}
+                onDeleteTask={handleDeleteTask}
+                onTaskClick={handleTaskClick}
+                accentColor="blue"
+                selectedTaskIds={selectedTaskIds}
+                onTaskSelect={handleTaskSelect}
+              />
+              <KanbanColumn
+                id="in-progress"
+                title="In Progress"
+                tasks={inProgressTasks}
+                onDeleteTask={handleDeleteTask}
+                onTaskClick={handleTaskClick}
+                accentColor="purple"
+                selectedTaskIds={selectedTaskIds}
+                onTaskSelect={handleTaskSelect}
+              />
+              <KanbanColumn
+                id="review"
+                title="Review"
+                tasks={reviewTasks}
+                onDeleteTask={handleDeleteTask}
+                onTaskClick={handleTaskClick}
+                accentColor="orange"
+                selectedTaskIds={selectedTaskIds}
+                onTaskSelect={handleTaskSelect}
+              />
+              <KanbanColumn
+                id="done"
+                title="Done"
+                tasks={doneTasks}
+                onDeleteTask={handleDeleteTask}
+                onTaskClick={handleTaskClick}
+                accentColor="green"
+                selectedTaskIds={selectedTaskIds}
+                onTaskSelect={handleTaskSelect}
+                showArchivedToggle={true}
+                showArchived={showArchivedInDone}
+                onToggleArchived={setShowArchivedInDone}
+                onArchiveTask={handleArchiveTask}
+                onUnarchiveTask={handleUnarchiveTask}
+                onBulkArchive={handleBulkArchiveDone}
+              />
+            </>
+          )}
         </div>
 
         <DragOverlay>

@@ -71,4 +71,4 @@ The seed script creates 6 example tasks across 3 projects:
 - @dnd-kit for drag-and-drop
 - gantt-task-react for timeline
 
-Enjoy Ulrik! 🚀
+Enjoy Anthra! 🚀

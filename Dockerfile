@@ -24,16 +24,17 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Ensure logo is in public folder (must be done before build)
 RUN mkdir -p public && \
-    if [ -f ulriklogo.svg ]; then \
-      cp ulriklogo.svg public/ulriklogo.svg && \
+    if [ -f anthralogo.svg ]; then \
+      cp anthralogo.svg public/anthralogo.svg && \
       echo "Logo copied to public folder"; \
     else \
       echo "Warning: Logo file not found"; \
     fi && \
     ls -la public/ || echo "Public folder created"
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Generate Prisma Client with DATABASE_URL from build args
+ARG DATABASE_URL
+RUN DATABASE_URL="$DATABASE_URL" npx prisma generate
 
 # Build Next.js application
 ENV NEXT_TELEMETRY_DISABLED 1

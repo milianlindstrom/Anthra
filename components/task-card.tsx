@@ -112,8 +112,8 @@ export function TaskCard({ task, isDragging = false, onDelete, onClick, isSelect
       {...attributes}
       onClick={() => onClick?.(task)}
       className={cn(
-        "group cursor-grab active:cursor-grabbing transition-all duration-200 ease-out",
-        "hover:border-foreground/20 hover:shadow-lg",
+        "group cursor-grab active:cursor-grabbing transition-smooth hover-lift",
+        "hover:border-foreground/20",
         "bg-card border",
         isDragging && "opacity-50 scale-95",
         priorityBackgroundColors[task.priority]

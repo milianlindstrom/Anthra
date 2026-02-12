@@ -87,9 +87,9 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-col gap-3 md:gap-4 p-3 md:p-4 border min-h-[400px] md:min-h-[500px] transition-all duration-200 w-full",
+        "flex flex-col gap-3 md:gap-4 p-2 sm:p-3 md:p-4 rounded-lg border min-h-[300px] sm:min-h-[400px] md:min-h-[500px] transition-smooth w-full shadow-refined-sm",
         "bg-card",
-        isOver ? `${colors.border} ${colors.bg} border-2` : "border-border"
+        isOver ? `${colors.border} ${colors.bg} border-2 shadow-refined-md` : "border-border"
       )}
     >
       <div className="flex items-center justify-between px-1 py-2">

@@ -7,6 +7,8 @@ import { Sidebar } from "@/components/sidebar";
 import { ProjectProvider } from "@/contexts/project-context";
 import { MobileSidebar } from "@/components/mobile-sidebar";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
+import { QuickAddInput } from "@/components/quick-add-input";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 const ibmPlexSans = IBM_Plex_Sans({ 
   subsets: ["latin"],
@@ -21,7 +23,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ulrik",
+  title: "Anthra",
   description: "A minimal task management system",
   icons: {
     icon: '/ulriklogo.svg',
@@ -40,13 +42,17 @@ export default function RootLayout({
       <body className={`${ibmPlexSans.variable} ${jetBrainsMono.variable} font-sans`}>
         <ProjectProvider>
           <div className="min-h-screen flex">
-            <Sidebar className="hidden md:flex w-64 shrink-0" />
+            <Sidebar className="hidden md:flex shrink-0" />
             <MobileSidebar />
             <main className="flex-1 overflow-auto pt-16 md:pt-0">
               {children}
             </main>
+            <div className="fixed top-4 right-4 z-50">
+              <DarkModeToggle />
+            </div>
             <GlobalSearch />
             <KeyboardShortcuts />
+            <QuickAddInput />
           </div>
         </ProjectProvider>
       </body>

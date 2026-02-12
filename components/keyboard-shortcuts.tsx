@@ -30,7 +30,8 @@ export function KeyboardShortcuts() {
 
   const shortcuts = [
     { keys: ['⌘', 'K'], description: 'Open global search' },
-    { keys: ['⌘', 'N'], description: 'Quick add task' },
+    { keys: ['⌘', 'N'], description: 'Quick add task (modal)' },
+    { keys: ['Q'], description: 'Quick add task (no modal, like Linear)' },
     { keys: ['J'], description: 'Navigate to next task (kanban)' },
     { keys: ['K'], description: 'Navigate to previous task (kanban)' },
     { keys: ['Esc'], description: 'Close modals/overlays' },

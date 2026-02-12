@@ -4,7 +4,7 @@
  * Test all MCP tools to ensure they work correctly
  */
 
-const API_URL = process.env.ULRIK_API_URL || 'http://localhost:3000';
+const API_URL = process.env.ANTHRA_API_URL || 'http://localhost:3000';
 const MCP_URL = process.env.MCP_SERVER_URL || 'http://localhost:3001';
 
 // Helper to call MCP tool

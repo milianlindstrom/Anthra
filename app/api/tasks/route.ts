@@ -51,6 +51,11 @@ export async function GET(request: NextRequest) {
         },
         parent_task: true,
         recurring_template: true,
+        sprint_tasks: {
+          include: {
+            sprint: true,
+          },
+        },
         _count: {
           select: { subtasks: true },
         },
@@ -89,12 +94,26 @@ export async function POST(request: NextRequest) {
       startDate = calculateStartDate(dueDate, body.estimated_hours)
     }
 
+    // Smart labels: Auto-label blocking tasks as high priority
+    let autoPriority = body.priority || 'medium'
+    if (body.title) {
+      const titleLower = body.title.toLowerCase()
+      // Check for blocking keywords
+      if (titleLower.includes('smoke test') || 
+          titleLower.includes('deployment') || 
+          titleLower.includes('deploy') ||
+          titleLower.includes('blocking') ||
+          titleLower.includes('blocker')) {
+        autoPriority = 'high'
+      }
+    }
+
     const task = await prisma.task.create({
       data: {
         title: body.title,
         description: body.description || null,
         status: body.status || 'backlog',
-        priority: body.priority || 'medium',
+        priority: autoPriority,
         project_id: body.project_id,
         start_date: startDate,
         due_date: dueDate,

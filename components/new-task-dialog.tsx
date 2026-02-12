@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from './ui/label'
 import { Project } from '@/lib/types'
 import { useProject } from '@/contexts/project-context'
+import { FileText, Plus } from 'lucide-react'
+import { TaskTemplateDialog } from './task-template-dialog'
 
 interface NewTaskDialogProps {
   open: boolean
@@ -20,6 +22,8 @@ interface NewTaskDialogProps {
 export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjectId }: NewTaskDialogProps) {
   const { selectedProjectId } = useProject()
   const [projects, setProjects] = useState<Project[]>([])
+  const [templates, setTemplates] = useState<any[]>([])
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -34,6 +38,7 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
   useEffect(() => {
     if (open) {
       fetchProjects()
+      loadTemplates()
       // Use selected project from context, or defaultProjectId, or first project
       const projectToUse = selectedProjectId !== 'all' ? selectedProjectId : (defaultProjectId || '')
       if (projectToUse) {
@@ -41,6 +46,40 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
       }
     }
   }, [open, defaultProjectId, selectedProjectId])
+
+  const loadTemplates = () => {
+    try {
+      const stored = localStorage.getItem('taskTemplates')
+      if (stored) {
+        setTemplates(JSON.parse(stored))
+      }
+    } catch (error) {
+      console.error('Error loading templates:', error)
+    }
+  }
+
+  const saveTemplate = (template: any) => {
+    try {
+      const updated = [...templates, { ...template, id: Date.now().toString() }]
+      localStorage.setItem('taskTemplates', JSON.stringify(updated))
+      setTemplates(updated)
+    } catch (error) {
+      console.error('Error saving template:', error)
+    }
+  }
+
+  const applyTemplate = (template: any) => {
+    setFormData({
+      title: template.title,
+      description: template.description || '',
+      status: 'backlog',
+      priority: template.priority,
+      project_id: template.project_id || formData.project_id,
+      start_date: '',
+      estimated_hours: template.estimated_hours?.toString() || '',
+      due_date: '',
+    })
+  }
 
   const fetchProjects = async () => {
     try {
@@ -98,12 +137,43 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Create New Task</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle>Create New Task</DialogTitle>
+              <div className="flex items-center gap-2">
+                {templates.length > 0 && (
+                  <Select onValueChange={(value) => {
+                    const template = templates.find(t => t.id === value)
+                    if (template) applyTemplate(template)
+                  }}>
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder="Use template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map(template => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsTemplateDialogOpen(true)}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Template
+                </Button>
+              </div>
+            </div>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
             <Input
@@ -222,5 +292,11 @@ export function NewTaskDialog({ open, onOpenChange, onTaskCreated, defaultProjec
         </form>
       </DialogContent>
     </Dialog>
+    <TaskTemplateDialog
+      open={isTemplateDialogOpen}
+      onOpenChange={setIsTemplateDialogOpen}
+      onSave={saveTemplate}
+    />
+    </>
   )
 }

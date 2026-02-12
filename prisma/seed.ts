@@ -52,16 +52,16 @@ async function main() {
   })
   console.log('   ✓ 📚 Learning')
 
-  const ulrikProject = await prisma.project.create({
+  const anthraProject = await prisma.project.create({
     data: {
-      name: 'Ulrik',
-      slug: 'ulrik',
+      name: 'Anthra',
+      slug: 'anthra',
       description: 'Task management system redesign',
       color: '#10b981', // emerald
       icon: '⚡',
     },
   })
-  console.log('   ✓ ⚡ Ulrik')
+  console.log('   ✓ ⚡ Anthra')
 
   // Create Tasks
   console.log('\n📝 Creating tasks...')
@@ -190,13 +190,13 @@ async function main() {
       due_date: new Date("2026-03-30"),
     },
 
-    // Ulrik tasks
+    // Anthra tasks
     {
       title: "Implement project hierarchy",
       description: "Add Projects model and update Task relationships",
       status: "done",
       priority: "high",
-      project_id: ulrikProject.id,
+      project_id: anthraProject.id,
       estimated_hours: 3,
       due_date: new Date("2026-01-27"),
     },
@@ -205,7 +205,7 @@ async function main() {
       description: "Properly implement start_date and due_date visualization with horizontal bars",
       status: "todo",
       priority: "high",
-      project_id: ulrikProject.id,
+      project_id: anthraProject.id,
       estimated_hours: 4,
       due_date: new Date("2026-01-28"),
     },
@@ -214,7 +214,7 @@ async function main() {
       description: "Apply Plane-inspired design system throughout the application",
       status: "in-progress",
       priority: "high",
-      project_id: ulrikProject.id,
+      project_id: anthraProject.id,
       estimated_hours: 6,
       due_date: new Date("2026-01-29"),
     },
@@ -223,7 +223,7 @@ async function main() {
       description: "Implement comprehensive keyboard shortcuts for power users",
       status: "todo",
       priority: "medium",
-      project_id: ulrikProject.id,
+      project_id: anthraProject.id,
       estimated_hours: 4,
       due_date: new Date("2026-02-01"),
     },
@@ -232,7 +232,7 @@ async function main() {
       description: "Implement optimistic updates and smooth 60fps animations",
       status: "todo",
       priority: "medium",
-      project_id: ulrikProject.id,
+      project_id: anthraProject.id,
       estimated_hours: 3,
       due_date: new Date("2026-02-02"),
     },

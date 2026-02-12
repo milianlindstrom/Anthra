@@ -68,7 +68,7 @@ export const analyticsTools = [
 ];
 
 export async function handleAnalyticsTool(name: string, args: any) {
-  const apiUrl = CONFIG.ULRIK_API_URL;
+  const apiUrl = CONFIG.ANTHRA_API_URL;
 
   try {
     switch (name) {

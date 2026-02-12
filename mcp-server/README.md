@@ -1,10 +1,10 @@
-# Ulrik MCP Server
+# Anthra MCP Server
 
-Model Context Protocol server for AI integration with Ulrik task management system.
+Model Context Protocol server for AI integration with Anthra task management system.
 
 ## Overview
 
-The Ulrik MCP Server provides AI assistants (like Claude, ChatGPT, or Open WebUI) with direct access to your Ulrik task management system. Through the MCP protocol, AI assistants can:
+The Anthra MCP Server provides AI assistants (like Claude, ChatGPT, or Open WebUI) with direct access to your Anthra task management system. Through the MCP protocol, AI assistants can:
 
 - Create, read, update, and delete tasks
 - Manage projects
@@ -17,8 +17,8 @@ The Ulrik MCP Server provides AI assistants (like Claude, ChatGPT, or Open WebUI
 ### Prerequisites
 
 - Node.js 20+ installed
-- Ulrik UI running on `http://localhost:3000` (or configure custom URL)
-- **Note**: Ulrik now requires user authentication. You'll need to create an account and login before using the MCP server.
+- Anthra UI running on `http://localhost:3000` (or configure custom URL)
+- **Note**: Anthra now requires user authentication. You'll need to create an account and login before using the MCP server.
 
 ### Installation
 
@@ -47,7 +47,7 @@ npm start
 Create a `.env` file in the `mcp-server/` directory:
 
 ```env
-ULRIK_API_URL=http://localhost:3000
+ANTHRA_API_URL=http://localhost:3000
 MCP_SERVER_PORT=3001
 ```
 
@@ -55,7 +55,7 @@ MCP_SERVER_PORT=3001
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ULRIK_API_URL` | URL of the Ulrik API server | `http://localhost:3000` |
+| `ANTHRA_API_URL` | URL of the Anthra API server | `http://localhost:3000` |
 | `MCP_SERVER_PORT` | Port for HTTP mode (optional) | `3001` |
 
 ## Available Tools
@@ -63,7 +63,7 @@ MCP_SERVER_PORT=3001
 ### Task Management (7 tools)
 
 #### `create_task`
-Create a new task in Ulrik.
+Create a new task in Anthra.
 
 **Parameters:**
 - `title` (required): Task title
@@ -224,11 +224,11 @@ Add to your `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "ulrik": {
+    "anthra": {
       "command": "node",
-      "args": ["/absolute/path/to/ulrik/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/anthra/mcp-server/dist/index.js"],
       "env": {
-        "ULRIK_API_URL": "http://localhost:3000"
+        "ANTHRA_API_URL": "http://localhost:3000"
       }
     }
   }
@@ -238,17 +238,17 @@ Add to your `claude_desktop_config.json`:
 **macOS/Linux:** `~/.config/claude/claude_desktop_config.json`  
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-After configuration, restart Claude Desktop. The Ulrik tools will appear in the tools menu.
+After configuration, restart Claude Desktop. The Anthra tools will appear in the tools menu.
 
 ### Open WebUI
 
 1. Go to Settings → Connections → MCP Servers
 2. Add new server:
-   - **Name:** Ulrik
+   - **Name:** Anthra
    - **Command:** `node`
-   - **Args:** `/absolute/path/to/ulrik/mcp-server/dist/index.js`
+   - **Args:** `/absolute/path/to/anthra/mcp-server/dist/index.js`
    - **Environment Variables:**
-     - `ULRIK_API_URL=http://localhost:3000`
+     - `ANTHRA_API_URL=http://localhost:3000`
 3. Save and restart Open WebUI
 
 ### Cline (VS Code)
@@ -257,11 +257,11 @@ Add to Cline MCP settings:
 
 ```json
 {
-  "ulrik": {
+  "anthra": {
     "command": "node",
-    "args": ["/absolute/path/to/ulrik/mcp-server/dist/index.js"],
+    "args": ["/absolute/path/to/anthra/mcp-server/dist/index.js"],
     "env": {
-      "ULRIK_API_URL": "http://localhost:3000"
+      "ANTHRA_API_URL": "http://localhost:3000"
     }
   }
 }
@@ -350,7 +350,7 @@ export async function handleMyTool(name: string, args: any) {
 
 - Check that Node.js 20+ is installed: `node --version`
 - Ensure dependencies are installed: `npm install`
-- Verify Ulrik UI is running on the configured URL
+- Verify Anthra UI is running on the configured URL
 
 ### Tools not appearing in Claude Desktop
 
@@ -360,8 +360,8 @@ export async function handleMyTool(name: string, args: any) {
 
 ### "Failed to connect to API" errors
 
-- Ensure `ULRIK_API_URL` is correct
-- Verify Ulrik UI is running: `curl http://localhost:3000/api/tasks`
+- Ensure `ANTHRA_API_URL` is correct
+- Verify Anthra UI is running: `curl http://localhost:3000/api/tasks`
 - Check for network/firewall issues
 
 ### TypeScript errors
@@ -373,18 +373,18 @@ npm run typecheck
 
 ## Architecture
 
-The MCP server acts as a bridge between AI assistants and the Ulrik API:
+The MCP server acts as a bridge between AI assistants and the Anthra API:
 
 ```
 ┌─────────────┐         ┌──────────────┐         ┌────────────┐
 │             │  stdio  │              │  HTTP   │            │
-│  AI Client  │ ◄─────► │  MCP Server  │ ◄─────► │  Ulrik API │
+│  AI Client  │ ◄─────► │  MCP Server  │ ◄─────► │  Anthra API │
 │  (Claude)   │         │              │         │   (Next.js)│
 └─────────────┘         └──────────────┘         └────────────┘
 ```
 
 1. AI client communicates with MCP server via stdio (standard input/output)
-2. MCP server translates requests to HTTP calls to Ulrik API
+2. MCP server translates requests to HTTP calls to Anthra API
 3. Responses are formatted and sent back to AI client
 
 ## Contributing
