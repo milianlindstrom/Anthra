@@ -271,7 +271,7 @@ export default function AnalyticsPage() {
       <div className="flex flex-col gap-4 mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Analytics Dashboard</h1>
             <p className="text-sm text-muted-foreground">
               Insights and metrics for this project
             </p>
@@ -308,7 +308,7 @@ export default function AnalyticsPage() {
         {/* Quick Stats - 4 cards in first row */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Completion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Completion Rate</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Work</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Active Work</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-purple-400">
@@ -336,7 +336,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Hours</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Total Hours</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
@@ -350,7 +350,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Blocked Tasks</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Blocked Tasks</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-orange-400">
@@ -365,7 +365,7 @@ export default function AnalyticsPage() {
         {/* Advanced Metrics - 4 cards in second row */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Recurring Tasks</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Recurring Tasks</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-400">
@@ -379,7 +379,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Subtasks</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Subtasks</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-400">
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Dependencies</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Dependencies</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-cyan-400">
@@ -407,7 +407,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Weekly Velocity</CardTitle>
+            <CardTitle className="text-sm font-medium text-foreground">Weekly Velocity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-400">
@@ -424,7 +424,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle>Status Distribution</CardTitle>
+            <CardTitle className="text-foreground">Status Distribution</CardTitle>
             <CardDescription>Tasks across workflow stages</CardDescription>
           </CardHeader>
           <CardContent>
@@ -445,7 +445,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Priority Breakdown</CardTitle>
+            <CardTitle className="text-foreground">Priority Breakdown</CardTitle>
             <CardDescription>Task distribution by priority</CardDescription>
           </CardHeader>
           <CardContent>
@@ -476,7 +476,7 @@ export default function AnalyticsPage() {
       {/* Velocity Chart */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-foreground">
             <TrendingUp className="h-5 w-5" />
             Velocity Trend
           </CardTitle>
@@ -501,7 +501,7 @@ export default function AnalyticsPage() {
       {/* Project Breakdown */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Project Breakdown</CardTitle>
+          <CardTitle className="text-foreground">Project Breakdown</CardTitle>
           <CardDescription>Tasks and completion rate by project</CardDescription>
         </CardHeader>
         <CardContent>
@@ -540,7 +540,7 @@ export default function AnalyticsPage() {
       {/* Hours Distribution */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Time Distribution</CardTitle>
+          <CardTitle className="text-foreground">Time Distribution</CardTitle>
           <CardDescription>Estimated hours by status</CardDescription>
         </CardHeader>
         <CardContent>
@@ -563,7 +563,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle className="h-5 w-5 text-orange-500" />
               Health Metrics
             </CardTitle>
@@ -594,7 +594,7 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <Clock className="h-5 w-5 text-purple-500" />
               Longest In Progress
             </CardTitle>
@@ -623,7 +623,7 @@ export default function AnalyticsPage() {
       {dueSoonTasks.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <AlertCircle className="h-5 w-5 text-amber-500" />
               Upcoming Deadlines (Next 7 Days)
             </CardTitle>

@@ -56,7 +56,7 @@ export default function GanttPage() {
     <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Gantt Timeline</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 text-foreground">Gantt Timeline</h1>
           <p className="text-sm text-muted-foreground">Visualize task schedules and dependencies</p>
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function GanttPage() {
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Priority Legend</CardTitle>
+            <CardTitle className="text-base text-foreground">Priority Legend</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function GanttPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Progress Legend</CardTitle>
+            <CardTitle className="text-base text-foreground">Progress Legend</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export default function GanttPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Statistics</CardTitle>
+            <CardTitle className="text-base text-foreground">Statistics</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between text-sm">

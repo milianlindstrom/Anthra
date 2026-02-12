@@ -376,7 +376,7 @@ export default function KanbanPage() {
   return (
     <div className="w-full max-w-[2400px] mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
-        <h1 className="text-xl font-medium tracking-tight">KANBAN</h1>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">KANBAN</h1>
         <div className="flex items-center gap-2 md:gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Button
@@ -406,9 +406,9 @@ export default function KanbanPage() {
 
       {/* Bulk Action Toolbar */}
       {selectedTaskIds.size > 0 && (
-        <div className="mb-6 p-4 bg-primary border border-border flex items-center justify-between flex-wrap gap-4">
+        <div className="mb-6 p-4 bg-primary/10 border border-primary/20 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-foreground">
               {selectedTaskIds.size} task{selectedTaskIds.size !== 1 ? 's' : ''} selected
             </span>
             <Button

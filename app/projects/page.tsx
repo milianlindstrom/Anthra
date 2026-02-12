@@ -14,15 +14,16 @@ import { Project } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 const COLORS = [
-  '#6366f1', '#8b5cf6', '#ec4899', '#f59e0b',
-  '#10b981', '#06b6d4', '#f97316', '#14b8a6',
-  '#ef4444', '#a855f7', '#3b82f6', '#22c55e',
+  '#1e40af', '#1e3a8a', '#1e293b', '#0f172a', // Dark blues/grays - construction/control panel
+  '#ea580c', '#f97316', '#fb923c', '#fdba74', // Safety orange spectrum
+  '#06b6d4', '#0891b2', '#0e7490', '#1e40af', // Steel blues
+  '#f59e0b', '#d97706', '#b45309', '#92400e', // Caution yellows
 ]
 
 const ICONS = [
-  '📁', '🚀', '💼', '🎯', '⚡', '🔥', '💡', '🌟',
-  '🎨', '🔧', '📊', '🎮', '🏗️', '📱', '🌐', '🔬',
-  '✨', '🎭', '🎪', '🎯', '🎲', '🎸', '🎹', '🎺',
+  '📁', '🏗️', '🔧', '📊', '⚙️', '🔩', '📐', '📏',
+  '🚧', '🚦', '🚨', '🔆', '💡', '🎯', '🚀', '✨',
+  '🔄', '🔗', '📋', '🗂️', '🗃️', '🗄️', '📂', '🗁️',
 ]
 
 export default function ProjectsPage() {
@@ -144,7 +145,7 @@ export default function ProjectsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Projects</h1>
+          <h1 className="text-3xl font-bold mb-2 text-foreground">Projects</h1>
           <p className="text-muted-foreground">Manage your projects and their tasks</p>
         </div>
         <div className="flex items-center gap-2">
@@ -189,11 +190,11 @@ export default function ProjectsPage() {
             <Card
               key={project.id}
               className={cn(
-                "group relative overflow-hidden transition-all hover:shadow-lg",
+                "group relative overflow-hidden transition-all hover:shadow-lg border-l-4",
                 project.archived && "opacity-60"
               )}
               style={{
-                borderLeft: `4px solid ${project.color}`,
+                borderLeftColor: project.color,
               }}
             >
               <CardHeader>
