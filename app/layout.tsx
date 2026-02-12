@@ -22,6 +22,8 @@ const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
+
+
 export const metadata: Metadata = {
   title: "Anthra",
   description: "A minimal task management system",

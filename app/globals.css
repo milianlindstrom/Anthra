@@ -31,31 +31,41 @@
   }
 
   .dark {
-    /* Sharp & Refined - High contrast charcoal design */
-    --background: 0 0% 2%;           /* deeper black background for more contrast */
-    --foreground: 0 0% 99%;          /* brighter white text for sharpness */
-    --card: 0 0% 4%;                 /* darker cards for better contrast */
-    --card-foreground: 0 0% 99%;
-    --popover: 0 0% 5%;              /* darker popover */
-    --popover-foreground: 0 0% 99%;
-    --primary: 0 0% 18%;             /* slightly darker primary for more definition */
+    /* Enhanced Charcoal Elegance - Deeper, richer dark theme */
+    --background: 0 0% 3%;           /* Near-black base - deeper charcoal */
+    --foreground: 0 0% 98%;          /* Near-white text - crisp contrast */
+    --card: 0 0% 6%;                 /* Charcoal cards - better separation */
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;              /* Charcoal popover - subtle depth */
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 18%;             /* Signature primary - refined charcoal */
     --primary-foreground: 0 0% 99%;
-    --secondary: 0 0% 8%;            /* sharper secondary */
-    --secondary-foreground: 0 0% 99%;
-    --muted: 0 0% 8%;                /* sharper muted background */
-    --muted-foreground: 0 0% 70%;    /* higher contrast muted text */
-    --accent: 0 0% 16%;              /* more defined hover state */
-    --accent-foreground: 0 0% 99%;
-    --destructive: 0 70% 55%;        /* brighter red for visibility */
+    --secondary: 0 0% 10%;           /* Deeper secondary - consistent charcoal */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;               /* Charcoal muted - improved hierarchy */
+    --muted-foreground: 0 0% 60%;    /* Reduced to 60% - better readability */
+    --accent: 0 0% 16%;              /* Pronounced hover - intentional interaction */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 58%;        /* Balanced red - visible but not harsh */
     --destructive-foreground: 0 0% 99%;
-    --border: 0 0% 18%;              /* stronger, more visible borders */
-    --input: 0 0% 8%;                /* darker input background */
-    --ring: 220 85% 65%;             /* brighter blue focus ring */
+    --border: 0 0% 16%;              /* Consistent charcoal borders */
+    --input: 0 0% 12%;               /* Charcoal input - unified palette */
+    --ring: 220 80% 60%;             /* Signature blue focus - premium feel */
     --radius: 0.375rem;              /* 6px - buttons, badges, inputs */
     --radius-md: 0.625rem;           /* 10px - cards, containers */
     --radius-lg: 0.875rem;           /* 14px - modals, major sections */
     --radius-xl: 1rem;               /* 16px - large dialogs */
     --radius-full: 9999px;           /* avatars, pills */
+    
+    /* Extended Charcoal Palette */
+    --charcoal-800: 0 0% 8%;         /* Dark elements */
+    --charcoal-700: 0 0% 12%;        /* Secondary surfaces */
+    --charcoal-600: 0 0% 16%;        /* Interactive elements */
+    --charcoal-500: 0 0% 20%;        /* Borders and dividers */
+    --charcoal-400: 0 0% 24%;        /* Hover states */
+    --charcoal-300: 0 0% 30%;        /* Active states */
+    --charcoal-200: 0 0% 40%;        /* Subtle backgrounds */
+    --charcoal-100: 0 0% 60%;        /* Text and icons */
   }
 }
 
@@ -167,6 +177,7 @@
     font-weight: 500;
   }
   
+
   /* Technical elements - JetBrains Mono */
   .task-id, .time-estimate, .priority-badge, .status-badge {
     font-family: var(--font-jetbrains-mono), monospace;
@@ -200,6 +211,36 @@
   /* Smooth transitions for interactive elements */
   button, a, [role="button"] {
     @apply transition-smooth active-press;
+  }
+  
+  /* Enhanced charcoal utility classes */
+  .bg-charcoal-800 {
+    background-color: hsl(var(--charcoal-800));
+  }
+  
+  .bg-charcoal-700 {
+    background-color: hsl(var(--charcoal-700));
+  }
+  
+  .bg-charcoal-600 {
+    background-color: hsl(var(--charcoal-600));
+  }
+  
+  .text-charcoal-100 {
+    color: hsl(var(--charcoal-100));
+  }
+  
+  .border-charcoal-500 {
+    border-color: hsl(var(--charcoal-500));
+  }
+  
+  /* Signature hover effects */
+  .hover-charcoal:hover {
+    background-color: hsl(var(--charcoal-600));
+  }
+  
+  .hover-charcoal-active:active {
+    background-color: hsl(var(--charcoal-700));
   }
 
   /* Subtle fade-in with spring */
